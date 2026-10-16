@@ -1,15 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { nftDetailQuery } from '@/features/catalog/queries'
+import { NftDetailPage } from '@/features/nft/nft-detail-page'
 
 export const Route = createFileRoute('/nft/$nftId')({
-  staticData: { nav: 'mercado' },
-  component: NftDetailPage,
+  loader: ({ context, params }) => {
+    void context.queryClient.prefetchQuery(nftDetailQuery(params.nftId))
+  },
+  head: () => ({ meta: [{ title: 'NFT — Kurio' }] }),
+  staticData: { nav: 'mercado', hideTabBar: true },
+  component: NftRoute,
 })
 
-function NftDetailPage() {
+function NftRoute() {
   const { nftId } = Route.useParams()
-  return (
-    <section className="page-container py-10">
-      <h1 className="text-2xl font-bold">NFT {nftId}</h1>
-    </section>
-  )
+  return <NftDetailPage nftId={nftId} />
 }

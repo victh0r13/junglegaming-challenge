@@ -1,13 +1,15 @@
+import { CatalogSection } from './catalog-section'
+import { BlogSection, PromoSection } from './editorial-sections'
+import { Hero } from './hero'
 import type { CatalogSearch } from './search-params'
 
-type HomePageProps = {
-  search: CatalogSearch
-}
-
-export function HomePage({ search }: HomePageProps) {
+export function HomePage({ search }: { search: CatalogSearch }) {
   return (
-    <section className="page-container py-10" data-search={JSON.stringify(search)}>
-      <h1 className="text-2xl font-bold">Início</h1>
-    </section>
+    <>
+      <Hero />
+      <CatalogSection search={search} />
+      <PromoSection />
+      <BlogSection />
+    </>
   )
 }

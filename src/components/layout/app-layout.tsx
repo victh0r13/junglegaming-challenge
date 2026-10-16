@@ -11,10 +11,11 @@ type AppLayoutProps = {
   nav?: NavSection
   tab?: TabSection
   headerDivider?: boolean
+  hideTabBar?: boolean
   cartCount?: number
 }
 
-export function AppLayout({ children, nav, tab, headerDivider = false, cartCount = 0 }: AppLayoutProps) {
+export function AppLayout({ children, nav, tab, headerDivider = false, hideTabBar = false, cartCount = 0 }: AppLayoutProps) {
   return (
     <>
       <a
@@ -28,7 +29,7 @@ export function AppLayout({ children, nav, tab, headerDivider = false, cartCount
         {children}
       </main>
       <SiteFooter />
-      <MobileTabBar active={tab} cartCount={cartCount} />
+      {!hideTabBar && <MobileTabBar active={tab} cartCount={cartCount} />}
     </>
   )
 }

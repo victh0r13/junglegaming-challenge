@@ -51,10 +51,10 @@ export default function ScenarioPanel() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="fixed bottom-[140px] left-4 z-50 h-10 gap-2 rounded-full border-border-soft bg-surface-dark text-text-accent shadow-lg md:bottom-4"
+          className="fixed top-2 right-2 z-50 h-9 gap-2 rounded-full border-border-soft bg-surface-dark px-3 text-text-accent shadow-lg md:top-auto md:right-auto md:bottom-4 md:left-4"
         >
           <FlaskConical aria-hidden="true" />
-          Cenários
+          <span className="max-md:sr-only">Cenários</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90dvh] overflow-y-auto">

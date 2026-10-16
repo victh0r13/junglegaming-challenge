@@ -38,7 +38,7 @@ export function MobileTabBar({ active, cartCount = 0 }: MobileTabBarProps) {
     >
       <div className="absolute inset-x-0 top-[31px] bottom-0 flex pb-[env(safe-area-inset-bottom)] text-card">
         <TabGroup tabs={LEFT_TABS} active={active} cartCount={cartCount} className="rounded-tl-[29px]" />
-        <svg width="152" height="95" viewBox="0 0 151.7 95" preserveAspectRatio="none" aria-hidden="true" className="h-full shrink-0">
+        <svg width="152" height="95" viewBox="0 0 151.7 95" preserveAspectRatio="none" aria-hidden="true" className="-mx-px h-full shrink-0">
           <path d={NOTCH_PATH} fill="currentColor" />
         </svg>
         <TabGroup tabs={RIGHT_TABS} active={active} cartCount={cartCount} className="rounded-tr-[29px]" />
