@@ -1,24 +1,25 @@
 import type { ComponentType, SVGProps } from 'react'
+import { Link, type LinkProps } from '@tanstack/react-router'
 import { HeartIcon, HomeIcon, ScanIcon, ShopIcon, UserIcon } from '@/components/icons'
 import { cn } from '@/lib/utils'
-
-type TabId = 'inicio' | 'favoritos' | 'carrinho' | 'perfil'
+import type { TabSection } from './app-layout'
 
 type Tab = {
-  id: TabId
+  id: TabSection
   label: string
-  href: string
+  to: LinkProps['to']
+  hash?: string
   Icon: ComponentType<SVGProps<SVGSVGElement>>
 }
 
 const LEFT_TABS: Tab[] = [
-  { id: 'inicio', label: 'Início', href: '/', Icon: HomeIcon },
-  { id: 'favoritos', label: 'Favoritos', href: '/perfil#favoritos', Icon: HeartIcon },
+  { id: 'inicio', label: 'Início', to: '/', Icon: HomeIcon },
+  { id: 'favoritos', label: 'Favoritos', to: '/perfil', hash: 'favoritos', Icon: HeartIcon },
 ]
 
 const RIGHT_TABS: Tab[] = [
-  { id: 'carrinho', label: 'Carrinho', href: '/carrinho', Icon: ShopIcon },
-  { id: 'perfil', label: 'Perfil', href: '/perfil', Icon: UserIcon },
+  { id: 'carrinho', label: 'Carrinho', to: '/carrinho', Icon: ShopIcon },
+  { id: 'perfil', label: 'Perfil', to: '/perfil', Icon: UserIcon },
 ]
 
 /** Recorte central da barra, extraído do vetor do Figma (largura 151.7, altura 95). */
@@ -26,12 +27,12 @@ const NOTCH_PATH =
   'M0 0C13.75 0 25.98 8.2 31.83 20.65C39.59 37.18 56.39 48.62 75.85 48.62C95.31 48.62 112.11 37.17 119.87 20.65C125.72 8.2 137.94 0 151.7 0V95H0Z'
 
 type MobileTabBarProps = {
-  active?: TabId
+  active?: TabSection
   cartCount?: number
 }
 
 /** Navegação inferior exibida apenas abaixo de 768px, como nos frames mobile. */
-export function MobileTabBar({ active = 'inicio', cartCount = 0 }: MobileTabBarProps) {
+export function MobileTabBar({ active, cartCount = 0 }: MobileTabBarProps) {
   return (
     <nav
       aria-label="Navegação principal"
@@ -45,20 +46,21 @@ export function MobileTabBar({ active = 'inicio', cartCount = 0 }: MobileTabBarP
         <TabGroup tabs={RIGHT_TABS} active={active} cartCount={cartCount} className="rounded-tr-[29px]" />
       </div>
 
-      <a
-        href="/#catalogo"
+      <Link
+        to="/"
+        hash="catalogo"
         aria-label="Explorar coleções"
         className="absolute top-0 left-1/2 grid size-[65px] -translate-x-1/2 place-items-center rounded-full bg-linear-to-b from-primary/40 to-primary text-foreground"
       >
         <ScanIcon />
-      </a>
+      </Link>
     </nav>
   )
 }
 
 type TabGroupProps = {
   tabs: Tab[]
-  active: TabId
+  active?: TabSection
   cartCount: number
   className?: string
 }
@@ -66,13 +68,14 @@ type TabGroupProps = {
 function TabGroup({ tabs, active, cartCount, className }: TabGroupProps) {
   return (
     <ul className={cn('flex flex-1 items-start justify-around bg-card pt-10', className)}>
-      {tabs.map(({ id, label, href, Icon }) => {
+      {tabs.map(({ id, label, to, hash, Icon }) => {
         const isActive = id === active
         const showBadge = id === 'carrinho' && cartCount > 0
         return (
           <li key={id}>
-            <a
-              href={href}
+            <Link
+              to={to}
+              hash={hash}
               aria-current={isActive ? 'page' : undefined}
               aria-label={showBadge ? `${label}, ${cartCount} ${cartCount === 1 ? 'item' : 'itens'}` : label}
               className={cn(
@@ -89,7 +92,7 @@ function TabGroup({ tabs, active, cartCount, className }: TabGroupProps) {
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>
               )}
-            </a>
+            </Link>
           </li>
         )
       })}

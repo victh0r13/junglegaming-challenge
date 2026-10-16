@@ -1,4 +1,5 @@
 import { useId, useState, type FormEvent } from 'react'
+import { Link } from '@tanstack/react-router'
 import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitterIcon, YoutubeIcon } from '@/components/icons'
 
 const FEATURES = [
@@ -19,14 +20,14 @@ const FEATURES = [
   },
 ] as const
 
-type FooterLink = { label: string; href?: string }
+type FooterLink = { label: string; to?: '/perfil'; collection?: string }
 
-/** Links sem `href` levam a páginas fora do escopo e são exibidos como indisponíveis. */
+/** Links sem destino levam a páginas fora do escopo e são exibidos como indisponíveis. */
 const LINK_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Meu perfil',
     links: [
-      { label: 'Meu perfil', href: '/perfil' },
+      { label: 'Meu perfil', to: '/perfil' },
       { label: 'Minha coleção' },
       { label: 'Atividade' },
       { label: 'Estúdio do criador' },
@@ -46,11 +47,11 @@ const LINK_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Coleções',
     links: [
-      { label: 'Arte digital', href: '/?colecao=arte-digital' },
-      { label: 'Fotografia', href: '/?colecao=fotografia' },
-      { label: 'Música', href: '/?colecao=musica' },
-      { label: 'Arte 3D', href: '/?colecao=arte-3d' },
-      { label: 'Utilidade', href: '/?colecao=utilidade' },
+      { label: 'Arte digital', collection: 'arte-digital' },
+      { label: 'Fotografia', collection: 'fotografia' },
+      { label: 'Música', collection: 'musica' },
+      { label: 'Arte 3D', collection: 'arte-3d' },
+      { label: 'Utilidade', collection: 'utilidade' },
     ],
   },
 ]
@@ -97,10 +98,14 @@ export function SiteFooter() {
             <ul className="mt-2 text-sm leading-[30px]">
               {column.links.map((link) => (
                 <li key={link.label}>
-                  {link.href ? (
-                    <a href={link.href} className="hover:text-text-accent">
+                  {link.to ? (
+                    <Link to={link.to} className="hover:text-text-accent">
                       {link.label}
-                    </a>
+                    </Link>
+                  ) : link.collection ? (
+                    <Link to="/" search={{ colecoes: [link.collection] }} hash="catalogo" className="hover:text-text-accent">
+                      {link.label}
+                    </Link>
                   ) : (
                     <span aria-disabled="true" title="Disponível em breve" className="cursor-not-allowed">
                       {link.label}

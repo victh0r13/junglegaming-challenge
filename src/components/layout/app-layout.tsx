@@ -3,12 +3,19 @@ import { MobileTabBar } from './mobile-tab-bar'
 import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 
+export type NavSection = 'inicio' | 'mercado'
+export type TabSection = 'inicio' | 'favoritos' | 'carrinho' | 'perfil'
+
 type AppLayoutProps = {
   children: ReactNode
+  nav?: NavSection
+  tab?: TabSection
+  headerDivider?: boolean
+  cartCount?: number
 }
 
 /** Estrutura comum das telas: cabeçalho, conteúdo, rodapé e navegação mobile. */
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({ children, nav, tab, headerDivider = false, cartCount = 0 }: AppLayoutProps) {
   return (
     <>
       <a
@@ -17,12 +24,12 @@ export function AppLayout({ children }: AppLayoutProps) {
       >
         Pular para o conteúdo
       </a>
-      <SiteHeader withDivider />
+      <SiteHeader active={nav} withDivider={headerDivider} cartCount={cartCount} />
       <main id="conteudo" tabIndex={-1} className="pb-[150px] outline-none md:pb-0">
         {children}
       </main>
       <SiteFooter />
-      <MobileTabBar />
+      <MobileTabBar active={tab} cartCount={cartCount} />
     </>
   )
 }

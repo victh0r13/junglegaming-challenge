@@ -1,73 +1,81 @@
+import { Link } from '@tanstack/react-router'
 import { CartIcon, LoginIcon, SearchIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-
-const NAV_ITEMS = [
-  { label: 'Início', href: '/' },
-  { label: 'Mercado', href: '/mercado' },
-  { label: 'Criadores', href: '/criadores' },
-  { label: 'Aprenda', href: '/aprenda' },
-] as const
-
-type NavLabel = (typeof NAV_ITEMS)[number]['label']
+import type { NavSection } from './app-layout'
 
 type SiteHeaderProps = {
-  /** Item de navegação destacado, conforme a tela atual. */
-  active?: NavLabel
+  /** Seção destacada na navegação, conforme a tela atual. */
+  active?: NavSection
   /** Quantidade de itens no carrinho exibida no badge. */
   cartCount?: number
-  /** Exibe a linha divisória sob o cabeçalho (home, perfil e carteiras). */
+  /** Exibe a linha divisória sob o cabeçalho (home, conta e autenticação). */
   withDivider?: boolean
 }
 
+const navItemClass = 'block border-b-[3px] pb-[21px] text-base whitespace-nowrap transition-colors'
+
 /** Cabeçalho desktop/tablet. No mobile a navegação fica na barra inferior. */
-export function SiteHeader({ active = 'Início', cartCount = 0, withDivider = false }: SiteHeaderProps) {
+export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteHeaderProps) {
+  const itemClass = (section: NavSection) =>
+    cn(
+      navItemClass,
+      active === section
+        ? 'border-primary font-bold text-text-accent'
+        : 'border-transparent text-foreground hover:text-text-accent',
+    )
+
   return (
     <header className="page-container hidden pt-6 md:block">
       <div className={cn('flex items-start justify-between gap-6', withDivider && 'border-b border-foreground/80')}>
-        <a
-          href="/"
-          className="pt-2 text-sm font-bold tracking-[0.1em] text-foreground lg:w-40"
-          aria-label="Kurio, página inicial"
-        >
+        <Link to="/" className="pt-2 text-sm font-bold tracking-[0.1em] text-foreground lg:w-40" aria-label="Kurio, página inicial">
           KURIO
-        </a>
+        </Link>
 
         <nav aria-label="Principal">
           <ul className="flex gap-6 lg:gap-10">
-            {NAV_ITEMS.map((item) => {
-              const isActive = item.label === active
-              return (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={cn(
-                      'block border-b-[3px] pb-[21px] text-base whitespace-nowrap transition-colors',
-                      isActive
-                        ? 'border-primary font-bold text-text-accent'
-                        : 'border-transparent text-foreground hover:text-text-accent',
-                    )}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              )
-            })}
+            <li>
+              <Link to="/" className={itemClass('inicio')} aria-current={active === 'inicio' ? 'page' : undefined}>
+                Início
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/"
+                hash="catalogo"
+                className={itemClass('mercado')}
+                aria-current={active === 'mercado' ? 'page' : undefined}
+              >
+                Mercado
+              </Link>
+            </li>
+            {/* Seções editoriais estão fora do escopo: ficam visíveis, mas sinalizadas como indisponíveis */}
+            {['Criadores', 'Aprenda'].map((label) => (
+              <li key={label}>
+                <span
+                  aria-disabled="true"
+                  title="Disponível em breve"
+                  className={cn(navItemClass, 'cursor-not-allowed border-transparent text-foreground')}
+                >
+                  {label}
+                </span>
+              </li>
+            ))}
           </ul>
         </nav>
 
         <div className="flex items-center gap-7">
-          <button
-            type="button"
+          <Link
+            to="/"
+            hash="catalogo"
             aria-label="Buscar NFTs"
             className="rounded-sm text-foreground transition-colors hover:text-text-accent"
           >
             <SearchIcon />
-          </button>
+          </Link>
 
-          <a
-            href="/carrinho"
+          <Link
+            to="/carrinho"
             aria-label={`Carrinho, ${cartCount} ${cartCount === 1 ? 'item' : 'itens'}`}
             className="relative rounded-sm text-foreground transition-colors hover:text-text-accent"
           >
@@ -80,13 +88,13 @@ export function SiteHeader({ active = 'Início', cartCount = 0, withDivider = fa
                 {cartCount > 9 ? '9+' : cartCount}
               </span>
             )}
-          </a>
+          </Link>
 
           <Button asChild className="h-[35px] w-[100px] gap-1 rounded-[6px] text-base font-medium">
-            <a href="/entrar">
+            <Link to="/entrar">
               <LoginIcon className="size-5" />
               Entrar
-            </a>
+            </Link>
           </Button>
         </div>
       </div>
