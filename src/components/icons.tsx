@@ -1,5 +1,3 @@
-// Ícones exportados do Figma, convertidos para componentes com currentColor
-// para herdarem a cor do texto (estados ativo, hover e foco).
 import type { SVGProps } from 'react'
 
 type IconProps = SVGProps<SVGSVGElement>

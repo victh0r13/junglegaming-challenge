@@ -14,7 +14,6 @@ export function createAppRouter(queryClient: QueryClient) {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreload: 'intent',
-    // Os dados ficam sob responsabilidade do TanStack Query; o router só dispara o carregamento
     defaultPreloadStaleTime: 0,
     defaultNotFoundComponent: () => <NotFoundPage />,
   })
@@ -25,7 +24,6 @@ declare module '@tanstack/react-router' {
     router: ReturnType<typeof createAppRouter>
   }
 
-  /** Metadados estáticos por rota usados pelo layout (item ativo e divisória). */
   interface StaticDataRouteOption {
     nav?: NavSection
     tab?: TabSection

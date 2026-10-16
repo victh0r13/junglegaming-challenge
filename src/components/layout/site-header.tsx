@@ -5,17 +5,13 @@ import { cn } from '@/lib/utils'
 import type { NavSection } from './app-layout'
 
 type SiteHeaderProps = {
-  /** Seção destacada na navegação, conforme a tela atual. */
   active?: NavSection
-  /** Quantidade de itens no carrinho exibida no badge. */
   cartCount?: number
-  /** Exibe a linha divisória sob o cabeçalho (home, conta e autenticação). */
   withDivider?: boolean
 }
 
 const navItemClass = 'block border-b-[3px] pb-[21px] text-base whitespace-nowrap transition-colors'
 
-/** Cabeçalho desktop/tablet. No mobile a navegação fica na barra inferior. */
 export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteHeaderProps) {
   const itemClass = (section: NavSection) =>
     cn(
@@ -49,7 +45,6 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
                 Mercado
               </Link>
             </li>
-            {/* Seções editoriais estão fora do escopo: ficam visíveis, mas sinalizadas como indisponíveis */}
             {['Criadores', 'Aprenda'].map((label) => (
               <li key={label}>
                 <span

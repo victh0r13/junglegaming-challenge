@@ -9,10 +9,6 @@ export type CatalogSort = (typeof CATALOG_SORTS)[number]
 const ethAmount = z.string().regex(/^\d+(\.\d{1,18})?$/)
 const slugList = z.array(z.string().regex(/^[a-z0-9-]+$/)).max(20)
 
-/**
- * Estado do catálogo na URL. Cada campo usa `.catch` para que valores inválidos
- * (URL editada à mão, link antigo) caiam no padrão em vez de quebrar a tela.
- */
 export const catalogSearchSchema = z.object({
   busca: z.string().trim().max(80).optional().catch(undefined),
   colecoes: slugList.optional().catch(undefined),

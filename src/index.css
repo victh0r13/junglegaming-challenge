@@ -2,19 +2,13 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Roboto Mono servida localmente (subset latino) nos pesos usados no Figma */
 @import "@fontsource/roboto-mono/latin-400.css";
 @import "@fontsource/roboto-mono/latin-500.css";
 @import "@fontsource/roboto-mono/latin-700.css";
 
-/*
- * Tokens do Figma (coleção "color/*") mapeados para as variáveis semânticas
- * do shadcn/ui. O layout só tem tema escuro, então não existe variante light.
- */
 :root {
   color-scheme: dark;
 
-  /* Paleta do Figma */
   --ink: #140d0a;
   --surface-card: #241612;
   --surface-dark: #38220f;
@@ -27,7 +21,6 @@
   --text-accent: #e89b55;
   --brand-foreground: #f5f1eb;
 
-  /* Variáveis semânticas do shadcn/ui */
   --background: var(--ink);
   --foreground: var(--brand-foreground);
   --card: var(--surface-card);
@@ -73,7 +66,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Utilitários específicos da marca: bg-surface-dark, text-text-accent etc. */
   --color-ink: var(--ink);
   --color-surface-card: var(--surface-card);
   --color-surface-dark: var(--surface-dark);
@@ -90,7 +82,6 @@
   --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-/* Container de 1200px do layout desktop, com respiro lateral em telas menores */
 @utility page-container {
   margin-inline: auto;
   width: 100%;
@@ -118,8 +109,32 @@
   }
 }
 
-/* Respeita a preferência do usuário por menos movimento */
+@utility skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(85 50 31 / 0.55), transparent);
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer::after {
+    animation: none;
+    display: none;
+  }
+
   *,
   *::before,
   *::after {

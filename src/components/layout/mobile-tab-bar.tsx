@@ -22,7 +22,6 @@ const RIGHT_TABS: Tab[] = [
   { id: 'perfil', label: 'Perfil', to: '/perfil', Icon: UserIcon },
 ]
 
-/** Recorte central da barra, extraído do vetor do Figma (largura 151.7, altura 95). */
 const NOTCH_PATH =
   'M0 0C13.75 0 25.98 8.2 31.83 20.65C39.59 37.18 56.39 48.62 75.85 48.62C95.31 48.62 112.11 37.17 119.87 20.65C125.72 8.2 137.94 0 151.7 0V95H0Z'
 
@@ -31,7 +30,6 @@ type MobileTabBarProps = {
   cartCount?: number
 }
 
-/** Navegação inferior exibida apenas abaixo de 768px, como nos frames mobile. */
 export function MobileTabBar({ active, cartCount = 0 }: MobileTabBarProps) {
   return (
     <nav

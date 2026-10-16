@@ -22,7 +22,6 @@ const FEATURES = [
 
 type FooterLink = { label: string; to?: '/perfil'; collection?: string }
 
-/** Links sem destino levam a páginas fora do escopo e são exibidos como indisponíveis. */
 const LINK_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Meu perfil',
@@ -64,7 +63,6 @@ const SOCIAL_LINKS = [
   { label: 'YouTube', href: 'https://www.youtube.com', Icon: YoutubeIcon },
 ] as const
 
-/** Rodapé desktop/tablet. Os frames mobile do Figma não exibem rodapé. */
 export function SiteFooter() {
   return (
     <footer className="page-container mt-24 hidden md:block">
@@ -172,10 +170,6 @@ function FeatureItem({ letter, title, text, withDivider }: FeatureItemProps) {
 
 type NewsletterStatus = { kind: 'idle' } | { kind: 'error' | 'info'; message: string }
 
-/**
- * A newsletter não faz parte do escopo da API simulada: o formulário valida o
- * e-mail, mas informa que a inscrição está indisponível em vez de simular sucesso.
- */
 function NewsletterForm() {
   const inputId = useId()
   const messageId = useId()

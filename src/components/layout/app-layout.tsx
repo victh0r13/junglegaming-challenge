@@ -14,7 +14,6 @@ type AppLayoutProps = {
   cartCount?: number
 }
 
-/** Estrutura comum das telas: cabeçalho, conteúdo, rodapé e navegação mobile. */
 export function AppLayout({ children, nav, tab, headerDivider = false, cartCount = 0 }: AppLayoutProps) {
   return (
     <>
