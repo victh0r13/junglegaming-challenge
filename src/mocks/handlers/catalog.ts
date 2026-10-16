@@ -64,6 +64,7 @@ export const catalogHandlers = [
       const maxPrice = url.searchParams.get('precoMax')
       const tab = url.searchParams.get('aba')
       const exclude = url.searchParams.get('excluir')
+      const ids = listParam(url, 'ids')
       const page = Math.max(1, Number.parseInt(url.searchParams.get('pagina') ?? '1', 10) || 1)
       const pageSize = Math.min(24, Math.max(1, Number.parseInt(url.searchParams.get('porPagina') ?? '', 10) || DEFAULT_PAGE_SIZE))
 
@@ -77,6 +78,7 @@ export const catalogHandlers = [
       const base = all.filter(
         (nft) =>
           nft.id !== exclude &&
+          (ids.length === 0 || ids.includes(nft.id)) &&
           matchesTab(nft, tab, newest) &&
           (!search ||
             normalize(`${nft.name} ${nft.tokenId} ${COLLECTION_LABELS[nft.collection]} ${nft.creator}`).includes(search)),

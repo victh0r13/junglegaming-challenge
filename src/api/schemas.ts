@@ -15,7 +15,7 @@ export const ensNameField = z
   .string()
   .trim()
   .toLowerCase()
-  .regex(/^[a-z0-9-]{3,32}\.eth$/, 'Use de 3 a 32 letras, números ou hífen.')
+  .regex(/^[a-z0-9-]{3,32}\.eth$/, 'Use o formato nome.eth (3 a 32 letras, números ou hífen).')
 export const nicknameField = z.string().trim().min(2, 'Use pelo menos 2 caracteres.').max(30, 'Use no máximo 30 caracteres.')
 export const referralField = z
   .string()

@@ -160,6 +160,7 @@ export type NftListParams = {
   pagina?: number
   porPagina?: number
   excluir?: string
+  ids?: string[]
 }
 
 export const userSchema = z.object({
