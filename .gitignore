@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Arquivos temporários do gerador de rotas
+.tanstack
