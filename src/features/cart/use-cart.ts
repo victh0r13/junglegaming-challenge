@@ -69,9 +69,9 @@ export function useApplyCoupon() {
 }
 
 export function useRemoveCoupon() {
-  return useCartMutation((_: void) => cartApi.removeCoupon())
+  return useCartMutation<void>(() => cartApi.removeCoupon())
 }
 
 export function useAcknowledgeCart() {
-  return useCartMutation((_: void) => cartApi.acknowledge())
+  return useCartMutation<void>(() => cartApi.acknowledge())
 }

@@ -134,10 +134,11 @@ export function CatalogSection({ search }: { search: CatalogSearch }) {
 }
 
 function SearchBox({ value, onSearch }: { value: string; onSearch: (value: string) => void }) {
-  const [draft, setDraft] = useState(value)
+  const [state, setState] = useState({ draft: value, base: value })
   const id = useId()
-
-  useEffect(() => setDraft(value), [value])
+  if (state.base !== value) setState({ draft: value, base: value })
+  const draft = state.base === value ? state.draft : value
+  const setDraft = (next: string) => setState({ draft: next, base: value })
 
   useEffect(() => {
     if (draft.trim() === value) return

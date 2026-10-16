@@ -48,28 +48,24 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
   const favorites = useToggleFavorite()
   const addToCart = useAddToCart()
   const cart = useCart()
-  const [editionId, setEditionId] = useState(() => pickDefaultEdition(nft))
-  const [quantity, setQuantity] = useState(1)
+  const [chosenEditionId, setEditionId] = useState(() => pickDefaultEdition(nft))
+  const [chosenQuantity, setQuantity] = useState(1)
   const [activeImage, setActiveImage] = useState(0)
   const [zoomOpen, setZoomOpen] = useState(false)
   const [tab, setTab] = useState<'detalhes' | 'avaliacoes'>('detalhes')
 
+  const editionId = nft.editions.some((candidate) => candidate.id === chosenEditionId && candidate.available > 0)
+    ? chosenEditionId
+    : pickDefaultEdition(nft)
   const edition = nft.editions.find((candidate) => candidate.id === editionId)
   const inCart = cart.data?.items.find((item) => item.nftId === nft.id && item.editionId === editionId)?.quantity ?? 0
   const maxQuantity = edition ? Math.max(0, Math.min(edition.available, edition.maxPerOrder) - inCart) : 0
   const isFavorite = favorites.isFavorite(nft.id)
+  const quantity = Math.max(1, Math.min(chosenQuantity, Math.max(1, maxQuantity)))
 
   useEffect(() => {
     document.title = `${nft.name} — Kurio`
   }, [nft.name])
-
-  useEffect(() => {
-    if (edition && edition.available === 0) setEditionId(pickDefaultEdition(nft))
-  }, [edition, nft])
-
-  useEffect(() => {
-    setQuantity((current) => Math.max(1, Math.min(current, Math.max(1, maxQuantity))))
-  }, [maxQuantity])
 
   function add(goToCart: boolean) {
     if (!edition) return
