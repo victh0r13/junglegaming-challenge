@@ -1,16 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { OrderPage } from '@/features/orders/order-page'
 
 export const Route = createFileRoute('/_privado/pedidos/$pedidoId')({
-  head: () => ({ meta: [{ title: 'Pedido — Kurio' }] }),
+  head: () => ({ meta: [{ title: 'Confirmação do pedido — Kurio' }] }),
   staticData: { nav: 'mercado', tab: 'carrinho' },
-  component: OrderPage,
+  component: OrderRoute,
 })
 
-function OrderPage() {
+function OrderRoute() {
   const { pedidoId } = Route.useParams()
-  return (
-    <section className="page-container py-10">
-      <h1 className="text-2xl font-bold">Pedido {pedidoId}</h1>
-    </section>
-  )
+  return <OrderPage orderId={pedidoId} />
 }

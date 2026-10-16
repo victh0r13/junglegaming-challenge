@@ -24,7 +24,7 @@ export type DbOrder = Order & {
 export type DbWallet = Wallet & { userId: string }
 
 export type DbState = {
-  schema: 2
+  schema: 3
   seq: number
   users: DbUser[]
   sessions: DbSession[]
@@ -49,6 +49,8 @@ export const SEED_USERS = [
     email: 'ana@kurio.dev',
     password: 'Kurio@2026',
     bio: 'Coleciono arte generativa e retratos digitais.',
+    ensName: 'anasouza.eth',
+    walletNickname: 'Cofre da Ana',
   },
   {
     id: 'usr_bruno',
@@ -57,6 +59,8 @@ export const SEED_USERS = [
     email: 'bruno@kurio.dev',
     password: 'Kurio@2026',
     bio: '',
+    ensName: 'brunolima.eth',
+    walletNickname: 'Carteira do Bruno',
   },
 ] as const
 
@@ -75,7 +79,7 @@ async function createSeed(): Promise<DbState> {
   )
   const updatedAt = '2026-10-01T12:00:00.000Z'
   return {
-    schema: 2,
+    schema: 3,
     seq: 1000,
     users,
     sessions: [],
@@ -93,6 +97,11 @@ async function createSeed(): Promise<DbState> {
         type: 'metamask',
         network: 'ethereum',
         address: '0x8ba1f109551bD432803012645Ac136ddd64DBA72',
+        secondaryRef: null,
+        displayName: 'Ana Souza',
+        profileName: 'Ana Coleciona',
+        email: 'ana@kurio.dev',
+        referralCode: 'ANA2026',
         ensName: 'anasouza.eth',
         updatedAt,
       },
@@ -104,7 +113,12 @@ async function createSeed(): Promise<DbState> {
         type: 'coinbase',
         network: 'polygon',
         address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-        ensName: null,
+        secondaryRef: 'anasouza.eth',
+        displayName: 'Ana Souza',
+        profileName: 'Ana Coleciona',
+        email: 'ana@kurio.dev',
+        referralCode: 'ANA2026',
+        ensName: 'anaviagem.eth',
         updatedAt,
       },
       {
@@ -115,7 +129,12 @@ async function createSeed(): Promise<DbState> {
         type: 'walletconnect',
         network: 'ethereum',
         address: '0x2546BcD3c84621e976D8185a91A922aE77ECEc30',
-        ensName: null,
+        secondaryRef: null,
+        displayName: 'Bruno Lima',
+        profileName: 'Bruno Lima',
+        email: 'bruno@kurio.dev',
+        referralCode: 'BRUNO26',
+        ensName: 'brunolima.eth',
         updatedAt,
       },
     ],
@@ -130,7 +149,7 @@ let state: DbState | null = null
 export const db = {
   async init() {
     const saved = storage.get<DbState>(STORAGE_KEY)
-    state = saved?.schema === 2 ? saved : await createSeed()
+    state = saved?.schema === 3 ? saved : await createSeed()
     db.persist()
   },
   async reset() {

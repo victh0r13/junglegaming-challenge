@@ -169,6 +169,8 @@ export const userSchema = z.object({
   email: z.email(),
   avatarUrl: z.string().nullable(),
   bio: z.string(),
+  ensName: z.string(),
+  walletNickname: z.string(),
 })
 export type User = z.infer<typeof userSchema>
 
@@ -183,7 +185,7 @@ export type AuthResponse = z.infer<typeof authResponseSchema>
 
 export type LoginBody = { email: string; password: string }
 export type RegisterBody = { displayName?: string; username: string; email: string; password: string }
-export type ProfileUpdateBody = Partial<Pick<User, 'displayName' | 'username' | 'email' | 'bio'>>
+export type ProfileUpdateBody = Partial<Pick<User, 'displayName' | 'username' | 'email' | 'bio' | 'ensName' | 'walletNickname'>>
 export type AvatarUpdateBody = { dataUrl: string | null }
 export type PasswordChangeBody = { currentPassword: string; newPassword: string }
 
@@ -261,13 +263,18 @@ export const walletSchema = z.object({
   type: walletTypeSchema,
   network: networkSchema,
   address: z.string(),
-  ensName: z.string().nullable(),
+  secondaryRef: z.string().nullable(),
+  displayName: z.string(),
+  profileName: z.string(),
+  email: z.string(),
+  referralCode: z.string(),
+  ensName: z.string(),
   updatedAt: z.string(),
 })
 export type Wallet = z.infer<typeof walletSchema>
 export const walletListSchema = z.object({ items: z.array(walletSchema) })
 
-export type WalletBody = Pick<Wallet, 'role' | 'label' | 'type' | 'network' | 'address'> & { ensName?: string | null }
+export type WalletBody = Omit<Wallet, 'id' | 'updatedAt' | 'secondaryRef'> & { secondaryRef?: string | null }
 
 export const walletConnectionSchema = z.object({
   walletId: z.string(),
@@ -288,7 +295,15 @@ export const orderSchema = z.object({
   quoteId: z.string(),
   network: networkSchema,
   wallet: z.object({ id: z.string(), label: z.string(), type: walletTypeSchema, address: z.string() }),
-  collector: z.object({ displayName: z.string(), username: z.string(), email: z.string(), note: z.string() }),
+  collector: z.object({
+    displayName: z.string(),
+    username: z.string(),
+    profileName: z.string(),
+    email: z.string(),
+    ensName: z.string(),
+    referralCode: z.string(),
+    note: z.string(),
+  }),
   items: z.array(
     z.object({
       nftId: z.string(),
@@ -316,7 +331,15 @@ export type CreateOrderBody = {
   quoteId: string
   walletId: string
   network: Network
-  collector: { displayName: string; username: string; email: string; note: string }
+  collector: {
+    displayName: string
+    username: string
+    profileName: string
+    email: string
+    ensName: string
+    referralCode: string
+    note: string
+  }
 }
 
 export const nftUpdatedEventSchema = z.object({

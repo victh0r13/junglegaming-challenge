@@ -226,7 +226,7 @@ export function settleIfDue(order: DbOrder) {
 
   if (outcome === 'confirmed') {
     order.transaction = {
-      hash: `0x${order.id.replace(/\W/g, '').padEnd(12, '0')}${'a1b2c3d4e5f6'.repeat(4)}`.slice(0, 66),
+      hash: `0x${Array.from(`${order.id}${order.createdAt}`, (char) => char.charCodeAt(0).toString(16)).join('').padEnd(64, '0').slice(0, 64)}`,
       explorerUrl: `https://etherscan.io/tx/simulada-${order.id}`,
     }
     const touched = new Set<SeedNft>()

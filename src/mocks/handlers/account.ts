@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import type { AuthResponse, AvatarUpdateBody, LoginBody, PasswordChangeBody, ProfileUpdateBody, RegisterBody } from '@/api/contracts'
+import { issuesToFields, passwordChangeSchema, profileInputSchema } from '@/api/schemas'
 import { db, hashPassword, type DbUser } from '../db'
 import {
   API,
@@ -77,6 +78,8 @@ export const accountHandlers = [
         email: input.email,
         avatarUrl: null,
         bio: '',
+        ensName: `${input.username.replace(/[^a-z0-9-]/g, '-').slice(0, 32).padEnd(3, '0')}.eth`,
+        walletNickname: 'Minha carteira',
         salt,
         passwordHash: await hashPassword(input.password, salt),
       }
@@ -123,17 +126,11 @@ export const accountHandlers = [
     route('write', async ({ request }) => {
       const user = requireUser(request)
       const body = await readJson<ProfileUpdateBody>(request)
-      const changes = {
-        displayName: body.displayName?.trim(),
-        username: body.username?.trim().toLowerCase(),
-        email: body.email?.trim().toLowerCase(),
-      }
+      const parsed = profileInputSchema.partial().safeParse(body)
+      if (!parsed.success) validationError(issuesToFields(parsed.error))
       if (body.bio !== undefined && body.bio.length > 280) validationError({ bio: 'A bio pode ter até 280 caracteres.' })
-      profileProblems(changes, user.id)
-
-      if (changes.displayName !== undefined) user.displayName = changes.displayName
-      if (changes.username !== undefined) user.username = changes.username
-      if (changes.email !== undefined) user.email = changes.email
+      profileProblems(parsed.data, user.id)
+      Object.assign(user, parsed.data)
       if (body.bio !== undefined) user.bio = body.bio.trim()
       db.persist()
       return HttpResponse.json(publicUser(user))
@@ -165,9 +162,8 @@ export const accountHandlers = [
       if ((await hashPassword(body.currentPassword ?? '', user.salt)) !== user.passwordHash) {
         validationError({ currentPassword: 'Senha atual incorreta.' })
       }
-      const problem = passwordProblem(body.newPassword ?? '')
-      if (problem) validationError({ newPassword: problem })
-      if (body.newPassword === body.currentPassword) validationError({ newPassword: 'A nova senha deve ser diferente da atual.' })
+      const parsed = passwordChangeSchema.safeParse(body)
+      if (!parsed.success) validationError(issuesToFields(parsed.error))
       user.salt = crypto.randomUUID()
       user.passwordHash = await hashPassword(body.newPassword!, user.salt)
       const token = request.headers.get('Authorization')?.replace('Bearer ', '')

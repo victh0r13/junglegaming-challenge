@@ -1,6 +1,7 @@
 import { delay, http, HttpResponse } from 'msw'
 import { NETWORKS, type AddCartItemBody, type CreateOrderBody, type Network, type UpdateCartItemBody } from '@/api/contracts'
 import { REQUEST_TIMEOUT_MS } from '@/api/config'
+import { collectorSchema, issuesToFields } from '@/api/schemas'
 import { db, type DbOrder } from '../db'
 import {
   buildQuote,
@@ -257,12 +258,11 @@ export const commerceHandlers = [
       }
 
       const network = parseNetwork(body.network)
-      const collector = body.collector
-      const fields: Record<string, string> = {}
-      if (!collector?.displayName?.trim()) fields['collector.displayName'] = 'Informe o nome de exibição.'
-      if (!collector?.username?.trim()) fields['collector.username'] = 'Informe o nome de usuário.'
-      if (!collector?.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(collector.email)) fields['collector.email'] = 'Informe um e-mail válido.'
-      if (Object.keys(fields).length > 0) validationError(fields)
+      const parsedCollector = collectorSchema.safeParse(body.collector ?? {})
+      if (!parsedCollector.success) {
+        validationError(Object.fromEntries(Object.entries(issuesToFields(parsedCollector.error)).map(([key, value]) => [`collector.${key}`, value])))
+      }
+      const collector = parsedCollector.data
 
       const wallet =
         db.data.wallets.find((w) => w.id === body.walletId && w.userId === user.id) ??
@@ -314,12 +314,7 @@ export const commerceHandlers = [
         quoteId: quote.id,
         network,
         wallet: { id: wallet.id, label: wallet.label, type: wallet.type, address: wallet.address },
-        collector: {
-          displayName: collector!.displayName.trim(),
-          username: collector!.username.trim(),
-          email: collector!.email.trim(),
-          note: collector!.note?.trim() ?? '',
-        },
+        collector,
         items: quote.items.map((line) => {
           const item = view.items.find((i) => i.id === line.itemId)!
           return {
