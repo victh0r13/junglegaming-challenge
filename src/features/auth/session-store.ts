@@ -32,7 +32,9 @@ function createSessionStore() {
     getUserId: () => (state.status === 'authenticated' ? state.session.userId : null),
     subscribe(listener: Listener) {
       listeners.add(listener)
-      return () => listeners.delete(listener)
+      return () => {
+        listeners.delete(listener)
+      }
     },
     signIn(session: StoredSession) {
       storage.set(STORAGE_KEY, session)

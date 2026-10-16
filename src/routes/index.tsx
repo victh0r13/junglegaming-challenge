@@ -1,16 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { HomePage } from '@/features/catalog/home-page'
 import { catalogSearchSchema } from '@/features/catalog/search-params'
 
 export const Route = createFileRoute('/')({
   validateSearch: catalogSearchSchema,
   staticData: { nav: 'inicio', tab: 'inicio', headerDivider: true },
-  component: HomePage,
+  component: HomeRoute,
 })
 
-function HomePage() {
-  return (
-    <section className="page-container py-10">
-      <h1 className="text-2xl font-bold">Início</h1>
-    </section>
-  )
+function HomeRoute() {
+  return <HomePage search={Route.useSearch()} />
 }

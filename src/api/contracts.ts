@@ -182,7 +182,7 @@ export const authResponseSchema = z.object({ user: userSchema, session: sessionS
 export type AuthResponse = z.infer<typeof authResponseSchema>
 
 export type LoginBody = { email: string; password: string }
-export type RegisterBody = { displayName: string; username: string; email: string; password: string }
+export type RegisterBody = { displayName?: string; username: string; email: string; password: string }
 export type ProfileUpdateBody = Partial<Pick<User, 'displayName' | 'username' | 'email' | 'bio'>>
 export type AvatarUpdateBody = { dataUrl: string | null }
 export type PasswordChangeBody = { currentPassword: string; newPassword: string }

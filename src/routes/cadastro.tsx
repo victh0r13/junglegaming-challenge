@@ -1,17 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { AuthDialog } from '@/features/auth/auth-dialog'
+import { authSearchSchema } from '@/features/auth/auth-search'
+import { sessionStore } from '@/features/auth/session-store'
+import { safeRedirect } from '@/features/auth/use-auth'
+import { HomePage } from '@/features/catalog/home-page'
 
 export const Route = createFileRoute('/cadastro')({
-  validateSearch: z.object({ redirect: z.string().startsWith('/').optional().catch(undefined) }),
+  validateSearch: authSearchSchema,
+  beforeLoad: ({ search }) => {
+    if (sessionStore.getToken()) throw redirect({ href: safeRedirect(search.redirect) })
+  },
   head: () => ({ meta: [{ title: 'Criar conta — Kurio' }] }),
   staticData: { nav: 'inicio', tab: 'perfil', headerDivider: true },
   component: RegisterPage,
 })
 
 function RegisterPage() {
+  const { redirect: target } = Route.useSearch()
   return (
-    <section className="page-container py-10">
-      <h1 className="text-2xl font-bold">Criar conta</h1>
-    </section>
+    <>
+      <HomePage search={{}} />
+      <AuthDialog mode="register" redirect={target} />
+    </>
   )
 }

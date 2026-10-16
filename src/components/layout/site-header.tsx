@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
-import { CartIcon, LoginIcon, SearchIcon } from '@/components/icons'
-import { Button } from '@/components/ui/button'
+import { CartIcon, SearchIcon } from '@/components/icons'
 import { cn } from '@/lib/utils'
+import { AccountMenu } from './account-menu'
 import type { NavSection } from './app-layout'
 
 type SiteHeaderProps = {
@@ -85,12 +85,7 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
             )}
           </Link>
 
-          <Button asChild className="h-[35px] w-[100px] gap-1 rounded-[6px] text-base font-medium">
-            <Link to="/entrar">
-              <LoginIcon className="size-5" />
-              Entrar
-            </Link>
-          </Button>
+          <AccountMenu />
         </div>
       </div>
     </header>

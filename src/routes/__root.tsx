@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react'
 import { HeadContent, Outlet, createRootRouteWithContext, useMatches } from '@tanstack/react-router'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Toaster } from '@/components/ui/sonner'
+import { SessionWatcher } from '@/features/auth/session-watcher'
 import type { RouterContext } from '@/app/router'
 
 const ScenarioPanel = import.meta.env.VITE_ENABLE_MOCKS === 'true' ? lazy(() => import('@/mocks/ui/scenario-panel')) : null
@@ -23,6 +24,7 @@ function RootComponent() {
         <Outlet />
       </AppLayout>
       <Toaster />
+      <SessionWatcher />
       {ScenarioPanel && (
         <Suspense fallback={null}>
           <ScenarioPanel />

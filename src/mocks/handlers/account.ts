@@ -58,9 +58,10 @@ export const accountHandlers = [
     `${API}/auth/register`,
     route('write', async ({ request }) => {
       const body = await readJson<RegisterBody>(request)
+      const username = body.username?.trim().toLowerCase() ?? ''
       const input = {
-        displayName: body.displayName?.trim() ?? '',
-        username: body.username?.trim().toLowerCase() ?? '',
+        displayName: body.displayName?.trim() || username,
+        username,
         email: body.email?.trim().toLowerCase() ?? '',
         password: body.password ?? '',
       }

@@ -19,6 +19,7 @@
   --text-primary: #f7f3ec;
   --text-secondary: #cfb28c;
   --text-accent: #e89b55;
+  --text-coral: #f0805f;
   --brand-foreground: #f5f1eb;
 
   --background: var(--ink);
@@ -74,6 +75,7 @@
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-accent: var(--text-accent);
+  --color-text-coral: var(--text-coral);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
