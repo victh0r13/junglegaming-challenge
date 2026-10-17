@@ -7,6 +7,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme="dark"
       position="bottom-right"
       containerAriaLabel="Notificações"
+      offset={{ bottom: 84, right: 24 }}
       className="toaster group"
       icons={{
         success: (

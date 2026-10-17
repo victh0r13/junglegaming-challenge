@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react'
+import { BREAKPOINTS, useMediaQuery } from '@/lib/use-media-query'
+import { BackToTop } from './back-to-top'
+import { useSameHashScroll } from './use-same-hash-scroll'
 import { MobileTabBar } from './mobile-tab-bar'
 import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
@@ -16,6 +19,9 @@ type AppLayoutProps = {
 }
 
 export function AppLayout({ children, nav, tab, headerDivider = false, hideTabBar = false, cartCount = 0 }: AppLayoutProps) {
+  const isDesktop = useMediaQuery(BREAKPOINTS.md)
+  useSameHashScroll()
+
   return (
     <>
       <a
@@ -24,12 +30,13 @@ export function AppLayout({ children, nav, tab, headerDivider = false, hideTabBa
       >
         Pular para o conteúdo
       </a>
-      <SiteHeader active={nav} withDivider={headerDivider} cartCount={cartCount} />
+      {isDesktop && <SiteHeader active={nav} withDivider={headerDivider} cartCount={cartCount} />}
       <main id="conteudo" tabIndex={-1} className="pb-[150px] outline-none md:pb-0">
         {children}
       </main>
-      <SiteFooter />
-      {!hideTabBar && <MobileTabBar active={tab} cartCount={cartCount} />}
+      {isDesktop && <SiteFooter />}
+      {isDesktop && <BackToTop />}
+      {!isDesktop && !hideTabBar && <MobileTabBar active={tab} cartCount={cartCount} />}
     </>
   )
 }

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
+import { announceComingSoon } from '@/components/layout/coming-soon'
 import type { CatalogSearch } from './search-params'
 
 const PROMOS: { title: string; text: string; image: string; search: CatalogSearch; alt: string }[] = [
@@ -72,14 +73,14 @@ export function BlogSection() {
       <ul className="mt-10 grid grid-cols-2 gap-6 lg:grid-cols-4">
         {POSTS.map((post) => (
           <li key={post.title}>
-            <article className="flex h-full flex-col bg-card">
+            <article className="group flex h-full flex-col overflow-hidden bg-card">
               <img
                 src={`${post.image}-320.webp`}
                 alt=""
                 width={270}
                 height={190}
                 loading="lazy"
-                className="h-[190px] w-full object-cover object-top"
+                className="h-[190px] w-full object-cover object-top transition-[scale] duration-700 ease-out group-hover:scale-105 motion-reduce:group-hover:scale-100"
               />
               <div className="flex flex-1 flex-col gap-2 p-3 text-xs leading-4">
                 <p className="text-text-secondary">
@@ -87,9 +88,18 @@ export function BlogSection() {
                 </p>
                 <h3 className="text-sm leading-5 font-bold">{post.title}</h3>
                 <p className="leading-4 text-text-secondary">{post.text}</p>
-                <span aria-disabled="true" title="Disponível em breve" className="mt-auto cursor-not-allowed text-text-accent">
-                  Ler mais → <span className="sr-only">(em breve)</span>
-                </span>
+                <button
+                  type="button"
+                  aria-disabled="true"
+                  onClick={() => announceComingSoon('O Diário da Cunhagem')}
+                  className="group/more mt-auto inline-flex w-fit items-center gap-1 text-text-accent"
+                >
+                  Ler mais
+                  <span aria-hidden="true" className="transition-[translate] group-hover/more:translate-x-0.5">
+                    →
+                  </span>
+                  <span className="sr-only">: {post.title} (em breve)</span>
+                </button>
               </div>
             </article>
           </li>

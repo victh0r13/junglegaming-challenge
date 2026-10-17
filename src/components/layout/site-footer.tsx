@@ -1,6 +1,7 @@
 import { useId, useState, type FormEvent } from 'react'
 import { Link } from '@tanstack/react-router'
 import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitterIcon, YoutubeIcon } from '@/components/icons'
+import { announceComingSoon } from './coming-soon'
 
 const FEATURES = [
   {
@@ -20,7 +21,7 @@ const FEATURES = [
   },
 ] as const
 
-type FooterLink = { label: string; to?: '/perfil'; collection?: string }
+type FooterLink = { label: string; to?: '/perfil'; hash?: string; collection?: string }
 
 const LINK_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
@@ -30,7 +31,7 @@ const LINK_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { label: 'Minha coleção' },
       { label: 'Atividade' },
       { label: 'Estúdio do criador' },
-      { label: 'Lista de interesse' },
+      { label: 'Lista de interesse', to: '/perfil', hash: 'favoritos' },
     ],
   },
   {
@@ -97,17 +98,23 @@ export function SiteFooter() {
               {column.links.map((link) => (
                 <li key={link.label}>
                   {link.to ? (
-                    <Link to={link.to} className="hover:text-text-accent">
+                    <Link to={link.to} hash={link.hash} className="transition-colors hover:text-text-accent">
                       {link.label}
                     </Link>
                   ) : link.collection ? (
-                    <Link to="/" search={{ colecoes: [link.collection] }} hash="catalogo" className="hover:text-text-accent">
+                    <Link to="/" search={{ colecoes: [link.collection] }} hash="catalogo" className="transition-colors hover:text-text-accent">
                       {link.label}
                     </Link>
                   ) : (
-                    <span aria-disabled="true" title="Disponível em breve" className="cursor-not-allowed">
+                    <button
+                      type="button"
+                      aria-disabled="true"
+                      onClick={() => announceComingSoon(link.label)}
+                      className="text-left text-foreground/65 transition-colors hover:text-foreground"
+                    >
                       {link.label}
-                    </span>
+                      <span className="sr-only"> (em breve)</span>
+                    </button>
                   )}
                 </li>
               ))}

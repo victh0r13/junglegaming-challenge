@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { CartIcon, SearchIcon } from '@/components/icons'
 import { cn } from '@/lib/utils'
 import { AccountMenu } from './account-menu'
+import { announceComingSoon } from './coming-soon'
 import type { NavSection } from './app-layout'
 
 type SiteHeaderProps = {
@@ -48,13 +49,15 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
             </li>
             {['Criadores', 'Aprenda'].map((label) => (
               <li key={label}>
-                <span
+                <button
+                  type="button"
                   aria-disabled="true"
-                  title="Disponível em breve"
-                  className={cn(navItemClass, 'cursor-not-allowed text-foreground after:scale-x-0')}
+                  onClick={() => announceComingSoon(label)}
+                  className={cn(navItemClass, 'text-foreground/65 after:scale-x-0 hover:text-foreground')}
                 >
                   {label}
-                </span>
+                  <span className="sr-only"> (em breve)</span>
+                </button>
               </li>
             ))}
           </ul>
