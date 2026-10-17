@@ -23,7 +23,7 @@ const PING_INTERVAL_MS = 20_000
 
 export const realtimeHandler = realtime.addEventListener('connection', (connection) => {
   if (refuseConnections) {
-    connection.client.close(1013, 'Indisponível')
+    refuse(connection.client)
     return
   }
 
@@ -47,6 +47,12 @@ export const realtimeHandler = realtime.addEventListener('connection', (connecti
     clients.delete(id)
   })
 })
+
+function refuse(client: { close: (code?: number, reason?: string) => void }) {
+  const socket = (client as { socket?: EventTarget }).socket
+  socket?.dispatchEvent(new Event('error'))
+  client.close(1013, 'Indisponível')
+}
 
 function nextEventId() {
   eventSeq += 1

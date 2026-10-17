@@ -23,6 +23,7 @@ export function RealtimeBridge() {
       transports: ['websocket'],
       reconnectionDelay: 500,
       reconnectionDelayMax: 4_000,
+      timeout: 5_000,
     })
     let hasConnected = false
     let subscribedUserId: string | null = null
