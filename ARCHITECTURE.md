@@ -106,15 +106,29 @@ O MSW importa `tough-cookie` (com `tldts`) para o seu cookie store. A API desta 
 - Erros de formulário com `aria-invalid` e mensagem associada; o foco vai para o primeiro campo inválido.
 - Botões só com ícone têm nome acessível; imagens decorativas usam `alt=""`.
 
+## Movimento
+
+As animações são todas em CSS (keyframes próprios em `index.css` e utilitários do `tw-animate-css`), sem biblioteca extra no bundle, e servem para dar retorno a uma ação ou mostrar uma mudança de estado:
+
+- **Retorno de ação:** coração com "pop" ao favoritar (só quando o usuário clica, não no carregamento), contador do carrinho que pulsa quando muda, leve compressão de botões ao clicar, quantidade que desliza ao mudar.
+- **Mudança de dado:** preço e total ganham um destaque breve quando o valor muda, o que torna visível uma atualização recebida pelo Socket.IO ou a aplicação de um cupom (`FlashOnChange`).
+- **Hierarquia e descoberta:** cards sobem e revelam as ações no hover, sublinhado das abas e do menu cresce a partir do centro, itens do catálogo, do carrinho e dos favoritos entram em sequência, troca de destaque no hero e de imagem na galeria com fade.
+- **Status:** recibo com ícone que "explode" ao confirmar ou recusar e pulso enquanto o pedido está pendente; aviso de reconexão desliza do topo.
+- **Carregamento:** imagens surgem com fade sobre um fundo neutro, sem piscar; imagens prioritárias (LCP) aparecem sem transição para não atrasar a métrica.
+
+- **Navegação:** cada página entra com um fade curto (250 ms, só opacidade).
+
+Regras seguidas: os blocos animam apenas `opacity`, `translate` e `scale`, que não causam layout shift (os indicadores do carrossel mudam de largura dentro de um botão de tamanho fixo); a entrada de página é só opacidade, para não criar bloco de contenção para elementos `fixed`; o hover só existe em dispositivos com ponteiro; e `prefers-reduced-motion` desliga todas as animações. O Lighthouse foi refeito depois das animações e não houve regressão (o CLS do início no celular até caiu, porque os indicadores do hero passaram a reservar a altura durante o carregamento).
+
 ## Performance
 
 Medido com Lighthouse CI (3 execuções, mediana; detalhes em [`lighthouse/RESUMO.md`](./lighthouse/RESUMO.md)):
 
 | Perfil | Página | Antes | Depois | LCP | TBT | CLS |
 | --- | --- | --- | --- | --- | --- | --- |
-| Celular | Início | 74 | 78 | 4,0 s | 277 ms | 0,033 |
-| Celular | Detalhe | 77 | 81 | 4,0 s | 159 ms | 0 |
-| Desktop | Início | — | 99 | 0,9 s | 9 ms | 0,001 |
+| Celular | Início | 74 | 79 | 4,0 s | 257 ms | 0,019 |
+| Celular | Detalhe | 77 | 82 | 4,0 s | 156 ms | 0 |
+| Desktop | Início | — | 99 | 1,0 s | 5 ms | 0 |
 | Desktop | Detalhe | 89 | 99 | 0,9 s | 0 ms | 0 |
 
 O que foi feito:

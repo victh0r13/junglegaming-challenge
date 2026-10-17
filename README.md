@@ -177,7 +177,7 @@ Valores em ETH trafegam como string decimal e são calculados em wei com `BigInt
 ### Sessão
 
 - O token fica no `localStorage` e é enviado em toda requisição. Abas diferentes sincronizam login e logout pelo evento `storage`.
-- Qualquer `401` com sessão ativa marca a sessão como expirada: o cache privado é descartado, aparece um aviso e, se a rota for privada, o usuário vai para `/entrar?motivo=expirada` com o endereço de retorno.
+- Qualquer `401` com sessão ativa marca a sessão como expirada: o cache privado é descartado, aparece um aviso e, se a rota for privada, o usuário vai para `/entrar?motivo=expirada` com o endereço de retorno. Esse estado sobrevive a um refresh até o próximo login, então o aviso não se perde.
 - Rotas privadas (`/perfil`, `/carteiras`, `/pagamento`, `/pedidos/:id`) redirecionam para o login antes de renderizar. O redirecionamento pós-login só aceita caminhos internos.
 - Ao trocar de usuário, as consultas privadas e o carrinho em cache são removidos, então nada da conta anterior aparece.
 
@@ -209,7 +209,7 @@ Valores em ETH trafegam como string decimal e são calculados em wei com `BigInt
 
 ## Testes
 
-A suíte Playwright (`e2e/`) roda cada teste em contexto isolado (banco simulado zerado e cenário definido antes do carregamento) nos projetos `desktop` (1440 × 900) e `mobile` (390 × 844). São 126 casos cobrindo:
+A suíte Playwright (`e2e/`) roda cada teste em contexto isolado (banco simulado zerado e cenário definido antes do carregamento) nos projetos `desktop` (1440 × 900) e `mobile` (390 × 844). São 128 casos cobrindo:
 
 - catálogo: busca, filtros, ordenação, paginação, histórico, página fora do intervalo, respostas fora de ordem, skeletons, erro com retry, vazio e offline;
 - detalhe e 404;
@@ -232,9 +232,9 @@ Resultado mais recente (medianas):
 
 | Perfil | Página | Perf. | A11y | Boas práticas | SEO | LCP | CLS | TBT |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Celular | Início | 78 | 100 | 100 | 100 | 4,0 s | 0,033 | 277 ms |
-| Celular | Detalhe | 81 | 100 | 100 | 100 | 4,0 s | 0 | 159 ms |
-| Desktop | Início | 99 | 100 | 100 | 100 | 0,9 s | 0,001 | 9 ms |
+| Celular | Início | 79 | 100 | 100 | 100 | 4,0 s | 0,019 | 257 ms |
+| Celular | Detalhe | 82 | 100 | 100 | 100 | 4,0 s | 0 | 156 ms |
+| Desktop | Início | 99 | 100 | 100 | 100 | 1,0 s | 0 | 5 ms |
 | Desktop | Detalhe | 99 | 100 | 100 | 100 | 0,9 s | 0 | 0 ms |
 
 Acessibilidade, boas práticas e SEO atingem a meta em todos os perfis, assim como a performance no desktop. A performance no celular fica abaixo de 90: o LCP depende de dados que só existem depois que o MSW sobe no navegador. A análise e o que já foi feito estão em [ARCHITECTURE.md](./ARCHITECTURE.md#performance).
