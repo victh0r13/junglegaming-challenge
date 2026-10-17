@@ -1,5 +1,6 @@
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
 import type { z } from 'zod'
+import { backendReady } from '@/api/backend'
 import { API_BASE_URL, REQUEST_TIMEOUT_MS } from '@/api/config'
 import { apiErrorBodySchema, type ErrorCode } from '@/api/contracts'
 import { sessionStore } from '@/features/auth/session-store'
@@ -29,7 +30,8 @@ export const http = axios.create({
   headers: { Accept: 'application/json' },
 })
 
-http.interceptors.request.use((config) => {
+http.interceptors.request.use(async (config) => {
+  await backendReady
   const token = sessionStore.getToken()
   if (token) config.headers.set('Authorization', `Bearer ${token}`)
   const guestCartId = guestCart.getId()

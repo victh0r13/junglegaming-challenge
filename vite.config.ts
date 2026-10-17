@@ -13,6 +13,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
+      'tough-cookie': path.resolve(import.meta.dirname, './src/mocks/shims/tough-cookie.ts'),
     },
   },
 })

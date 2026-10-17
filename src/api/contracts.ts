@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+z.config({ jitless: true })
+
 export const ethSchema = z.string().regex(/^\d+(\.\d{1,18})?$/, 'Valor em ETH inválido')
 
 export const NETWORKS = ['ethereum', 'polygon', 'solana'] as const

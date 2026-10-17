@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import { setBackendReady } from '@/api/backend'
 
 async function enableMocking() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') return
@@ -7,10 +8,10 @@ async function enableMocking() {
   await startMockServer()
 }
 
-async function bootstrap() {
-  await enableMocking()
+async function render() {
   const { App } = await import('@/app/app')
   createRoot(document.getElementById('root')!).render(<App />)
 }
 
-void bootstrap()
+void enableMocking().finally(setBackendReady)
+void render()

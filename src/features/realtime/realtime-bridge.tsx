@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { io, type Socket } from 'socket.io-client'
 import { WifiOff } from 'lucide-react'
+import { backendReady } from '@/api/backend'
 import { REALTIME_URL } from '@/api/config'
 import { nftUpdatedEventSchema, orderUpdatedEventSchema } from '@/api/contracts'
 import { queryKeys } from '@/api/query-keys'
@@ -24,7 +25,9 @@ export function RealtimeBridge() {
       reconnectionDelay: 500,
       reconnectionDelayMax: 4_000,
       timeout: 5_000,
+      autoConnect: false,
     })
+    let active = true
     let hasConnected = false
     let subscribedUserId: string | null = null
 
@@ -68,8 +71,12 @@ export function RealtimeBridge() {
     const unsubscribeSession = sessionStore.subscribe(() => {
       if (socket.connected) syncSession()
     })
+    void backendReady.then(() => {
+      if (active) socket.connect()
+    })
 
     return () => {
+      active = false
       unsubscribeSession()
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)

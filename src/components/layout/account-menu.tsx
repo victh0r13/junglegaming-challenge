@@ -1,19 +1,12 @@
-import { Link, useLocation, useNavigate } from '@tanstack/react-router'
-import { LogOut, User as UserIcon, Wallet } from 'lucide-react'
-import { toast } from 'sonner'
+import { Suspense, lazy } from 'react'
+import { Link, useLocation } from '@tanstack/react-router'
 import type { User } from '@/api/contracts'
 import { LoginIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { useCurrentUser, useLogout } from '@/features/auth/use-auth'
+import { useCurrentUser } from '@/features/auth/use-auth'
 import { cn } from '@/lib/utils'
+
+const AccountDropdown = lazy(() => import('./account-dropdown'))
 
 export function UserAvatar({ user, className }: { user: Pick<User, 'displayName' | 'avatarUrl'>; className?: string }) {
   const initials = user.displayName
@@ -32,8 +25,6 @@ export function UserAvatar({ user, className }: { user: Pick<User, 'displayName'
 
 export function AccountMenu() {
   const { user, isAuthenticated } = useCurrentUser()
-  const logout = useLogout()
-  const navigate = useNavigate()
   const location = useLocation()
 
   if (!isAuthenticated) {
@@ -47,47 +38,9 @@ export function AccountMenu() {
     )
   }
 
-  async function signOut() {
-    await logout.mutateAsync().catch(() => undefined)
-    toast.success('Você saiu da sua conta.')
-    navigate({ to: '/' })
-  }
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className="flex h-[35px] items-center gap-2 rounded-[6px] border border-border-soft px-2 text-sm hover:border-primary"
-        aria-label={user ? `Conta de ${user.displayName}` : 'Conta'}
-      >
-        {user ? <UserAvatar user={user} className="size-6" /> : <span className="size-6 rounded-full bg-surface-card" />}
-        <span className="max-w-28 truncate max-lg:hidden">{user?.displayName ?? 'Carregando'}</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-52">
-        {user && (
-          <DropdownMenuLabel className="flex flex-col">
-            <span className="text-foreground">{user.displayName}</span>
-            <span className="text-xs font-normal text-text-secondary">@{user.username}</span>
-          </DropdownMenuLabel>
-        )}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/perfil">
-            <UserIcon aria-hidden="true" />
-            Perfil do colecionador
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/carteiras">
-            <Wallet aria-hidden="true" />
-            Carteiras
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={signOut} disabled={logout.isPending}>
-          <LogOut aria-hidden="true" />
-          Sair
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Suspense fallback={<span className="h-[35px] w-[100px] rounded-[6px] border border-border-soft" aria-hidden="true" />}>
+      <AccountDropdown user={user} />
+    </Suspense>
   )
 }
