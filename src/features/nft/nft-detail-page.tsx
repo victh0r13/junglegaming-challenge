@@ -359,7 +359,8 @@ function DetailLine({ title, text }: { title: string; text: string }) {
 function Rating({ value, count }: { value: number; count: number }) {
   const rounded = Math.round(value)
   return (
-    <p className="flex items-center gap-1 text-[13px]" aria-label={`Nota ${value.toFixed(1)} de 5, ${count} avaliações`}>
+    <p className="flex items-center gap-1 text-[13px]">
+      <span className="sr-only">{`Nota ${value.toFixed(1)} de 5, ${count} avaliações`}</span>
       <span className="flex text-primary" aria-hidden="true">
         {Array.from({ length: 5 }, (_, index) => (
           <Star key={index} className={cn('size-3.5', index < rounded ? 'fill-current' : 'opacity-40')} />
@@ -461,7 +462,7 @@ function AvailabilityNote({ edition, maxQuantity, inCart }: { edition: Edition |
 
 function NftDetailSkeleton() {
   return (
-    <div className="page-container pt-6" aria-busy="true" aria-label="Carregando NFT">
+    <div className="page-container min-h-dvh pt-6" role="status" aria-busy="true" aria-label="Carregando NFT">
       <Skeleton className="hidden h-4 w-40 md:block" />
       <div className="mt-4 flex flex-col gap-5 md:flex-row">
         <div className="hidden flex-col gap-3 md:flex">

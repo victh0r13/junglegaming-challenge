@@ -10,7 +10,7 @@ export const Route = createFileRoute('/entrar')({
   beforeLoad: ({ search }) => {
     if (sessionStore.getToken()) throw redirect({ href: safeRedirect(search.redirect) })
   },
-  head: () => ({ meta: [{ title: 'Entrar — Kurio' }] }),
+  head: () => ({ meta: [{ title: 'Entrar — Kurio' }, { name: 'description', content: 'Entre na Kurio para gerenciar sua carteira, coleção e perfil de colecionador.' }] }),
   staticData: { nav: 'inicio', tab: 'perfil', headerDivider: true },
   component: LoginPage,
 })

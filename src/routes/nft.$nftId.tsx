@@ -6,7 +6,7 @@ export const Route = createFileRoute('/nft/$nftId')({
   loader: ({ context, params }) => {
     void context.queryClient.prefetchQuery(nftDetailQuery(params.nftId))
   },
-  head: () => ({ meta: [{ title: 'NFT — Kurio' }] }),
+  head: () => ({ meta: [{ title: 'NFT — Kurio' }, { name: 'description', content: 'Veja edições, disponibilidade, preço e detalhes deste NFT na Kurio.' }] }),
   staticData: { nav: 'mercado', hideTabBar: true },
   component: NftRoute,
 })

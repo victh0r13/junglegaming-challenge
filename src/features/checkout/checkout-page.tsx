@@ -584,7 +584,7 @@ function SelectField({ label, error, required, children, className, ...props }: 
 function CheckoutSkeleton() {
   const fields = useMemo(() => Array.from({ length: 10 }, (_, index) => index), [])
   return (
-    <div className="page-container flex flex-col gap-8 pt-12 lg:flex-row" aria-busy="true" aria-label="Carregando pagamento">
+    <div className="page-container flex flex-col gap-8 pt-12 lg:flex-row" role="status" aria-busy="true" aria-label="Carregando pagamento">
       <div className="grid flex-1 gap-5 md:grid-cols-2">
         {fields.map((index) => (
           <Skeleton key={index} className="h-16" />

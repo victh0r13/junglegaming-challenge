@@ -10,7 +10,7 @@ export const Route = createFileRoute('/cadastro')({
   beforeLoad: ({ search }) => {
     if (sessionStore.getToken()) throw redirect({ href: safeRedirect(search.redirect) })
   },
-  head: () => ({ meta: [{ title: 'Criar conta — Kurio' }] }),
+  head: () => ({ meta: [{ title: 'Criar conta — Kurio' }, { name: 'description', content: 'Crie seu perfil de colecionador na Kurio e conecte uma carteira quando quiser.' }] }),
   staticData: { nav: 'inicio', tab: 'perfil', headerDivider: true },
   component: RegisterPage,
 })

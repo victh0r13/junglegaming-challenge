@@ -11,7 +11,10 @@ const ScenarioPanel = import.meta.env.VITE_ENABLE_MOCKS === 'true' ? lazy(() => 
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
-    meta: [{ title: 'Kurio — Marketplace de NFTs' }],
+    meta: [
+      { title: 'Kurio — Marketplace de NFTs' },
+      { name: 'description', content: 'Colecione arte digital rara de criadores emergentes e consagrados no marketplace Kurio.' },
+    ],
   }),
   component: RootComponent,
 })

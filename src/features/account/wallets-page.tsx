@@ -29,7 +29,7 @@ export function WalletsPage() {
         Estas carteiras ficam disponíveis no pagamento e para receber os NFTs comprados.
       </p>
       {wallets.isPending || profile.isPending ? (
-        <div className="mt-6 grid gap-5 md:grid-cols-2" aria-busy="true" aria-label="Carregando carteiras">
+        <div className="mt-6 grid gap-5 md:grid-cols-2" role="status" aria-busy="true" aria-label="Carregando carteiras">
           {Array.from({ length: 8 }, (_, index) => (
             <Skeleton key={index} className="h-16" />
           ))}

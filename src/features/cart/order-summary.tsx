@@ -17,7 +17,7 @@ const money = (value: string) => `${formatEth(value, { maxFractionDigits: 6 })} 
 export function OrderSummary({ quote, loading, updating, className, feeHint = 'Taxa estimada' }: OrderSummaryProps) {
   if (loading || !quote) {
     return (
-      <div className={cn('flex flex-col gap-3', className)} aria-busy="true" aria-label="Calculando resumo">
+      <div className={cn('flex flex-col gap-3', className)} role="status" aria-busy="true" aria-label="Calculando resumo">
         {Array.from({ length: 4 }, (_, index) => (
           <div key={index} className="flex justify-between">
             <Skeleton className="h-5 w-32" />

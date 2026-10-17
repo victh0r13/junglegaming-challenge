@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { OrderPage } from '@/features/orders/order-page'
 
 export const Route = createFileRoute('/_privado/pedidos/$pedidoId')({
-  head: () => ({ meta: [{ title: 'Confirmação do pedido — Kurio' }] }),
+  head: () => ({ meta: [{ title: 'Confirmação do pedido — Kurio' }, { name: 'description', content: 'Acompanhe a confirmação do seu pedido de NFTs na Kurio.' }] }),
   staticData: { nav: 'mercado', tab: 'carrinho' },
   component: OrderRoute,
 })

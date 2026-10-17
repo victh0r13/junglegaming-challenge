@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /perfil
+Disallow: /carteiras
+Disallow: /pagamento
+Disallow: /pedidos/
+Disallow: /entrar
+Disallow: /cadastro

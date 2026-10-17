@@ -25,7 +25,7 @@ export function ProfilePage() {
   return (
     <AccountLayout title="Perfil do colecionador">
       {profile.isPending ? (
-        <div className="mt-6 grid gap-5 md:grid-cols-2" aria-busy="true" aria-label="Carregando perfil">
+        <div className="mt-6 grid gap-5 md:grid-cols-2" role="status" aria-busy="true" aria-label="Carregando perfil">
           {Array.from({ length: 6 }, (_, index) => (
             <Skeleton key={index} className="h-16" />
           ))}
