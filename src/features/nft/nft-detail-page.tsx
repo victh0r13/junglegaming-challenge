@@ -124,7 +124,7 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
       </div>
 
       <article aria-labelledby="nft-titulo" className="md:page-container md:mt-4">
-        <div className="flex flex-col md:flex-row md:gap-5">
+        <div className="flex flex-col md:gap-8 lg:flex-row lg:items-start lg:gap-5">
           <div className="relative md:hidden">
             <NftImage
               key={activeImage}
@@ -175,7 +175,7 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
             </div>
           </div>
 
-          <div className="hidden shrink-0 gap-5 md:flex">
+          <div className="hidden shrink-0 items-start gap-5 md:flex">
             <ul className="flex flex-col gap-3" aria-label="Galeria">
               {nft.gallery.map((image, index) => (
                 <li key={`${image.src}-${index}`}>
@@ -194,13 +194,13 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
                 </li>
               ))}
             </ul>
-            <div className="relative bg-card p-4">
+            <div className="relative self-start bg-card p-4">
               <NftImage
                 key={activeImage}
                 image={nft.gallery[activeImage]}
-                sizes="(min-width: 1024px) 384px, 40vw"
+                sizes="(min-width: 1024px) 384px, 60vw"
                 priority
-                className={cn('size-[min(384px,38vw)] rounded-[15px]', imageAnimation)}
+                className={cn('size-[min(460px,60vw)] rounded-[15px] lg:size-[min(384px,38vw)]', imageAnimation)}
               />
               <button
                 ref={zoomTriggerRef}
@@ -214,7 +214,7 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
             </div>
           </div>
 
-          <div className="relative z-10 -mt-28 flex flex-1 flex-col rounded-t-[40px] bg-background px-6 pt-8 pb-48 md:mt-0 md:rounded-none md:px-0 md:pt-0 md:pb-0">
+          <div className="relative z-10 -mt-28 flex min-w-0 flex-1 flex-col rounded-t-[40px] bg-background px-6 pt-8 pb-48 md:mt-0 md:rounded-none md:px-0 md:pt-0 md:pb-0">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h1 id="nft-titulo" className="text-xl font-bold md:text-[26px] md:leading-8">
                 {nft.name}
@@ -231,7 +231,7 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
 
             <EditionPicker editions={nft.editions} value={editionId} onChange={setEditionId} />
 
-            <div className="mt-5 hidden items-center justify-between gap-4 md:flex">
+            <div className="mt-5 hidden flex-wrap items-center justify-between gap-4 md:flex">
               <QuantityStepper value={quantity} max={maxQuantity} onChange={setQuantity} inCart={inCart} />
               <div className="flex gap-2">
                 <button

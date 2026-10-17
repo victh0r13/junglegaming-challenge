@@ -4,6 +4,7 @@ import { ChevronDown, ChevronLeft, ChevronRight, CloudOff, Search, SearchX, Slid
 import { getErrorMessage } from '@/api/http'
 import { NftCard, NftCardSkeleton } from '@/components/nft/nft-card'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { BREAKPOINTS, useMediaQuery } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 import { CatalogFilters } from './catalog-filters'
 import { nftListQuery, toListParams } from './queries'
@@ -24,6 +25,7 @@ export function CatalogSection({ search }: { search: CatalogSearch }) {
   const query = useQuery(nftListQuery(params))
   const { update } = useCatalogNavigation(search)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const isLarge = useMediaQuery(BREAKPOINTS.lg)
   const headingId = useId()
   const resultsRef = useRef<HTMLDivElement>(null)
 
@@ -49,10 +51,12 @@ export function CatalogSection({ search }: { search: CatalogSearch }) {
       </h2>
 
       <div className="flex gap-12">
-        <aside className="hidden w-[310px] shrink-0 flex-col gap-6 lg:flex" aria-label="Filtros do catálogo">
-          <CatalogFilters search={search} facets={data?.facets} />
-          <SpotlightBanner />
-        </aside>
+        {isLarge && (
+          <aside className="hidden w-[310px] shrink-0 flex-col gap-6 lg:flex" aria-label="Filtros do catálogo">
+            <CatalogFilters search={search} facets={data?.facets} />
+            <SpotlightBanner />
+          </aside>
+        )}
 
         <div ref={resultsRef} className="flex min-w-0 flex-1 scroll-mt-6 flex-col gap-8">
           <div className="flex gap-3">
