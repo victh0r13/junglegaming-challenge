@@ -64,14 +64,15 @@ test.describe('Autenticação', () => {
     await expect(page.getByRole('main').getByLabel('Nome de exibição')).toHaveValue(USERS.ana.name)
 
     await page.evaluate(() => window.__kurioMocks!.expireSessions())
-    await page.getByRole('navigation', { name: 'Conta' }).getByRole('link', { name: 'Carteiras' }).click()
+    await app.reload()
 
     await expect(page).toHaveURL(/\/entrar\?.*motivo=expirada/)
     await expect(app.authDialog().getByText('Sua sessão expirou. Entre novamente para continuar de onde parou.')).toBeVisible()
     await expect(app.toast('Sua sessão expirou')).toBeVisible()
 
     await app.submitLogin(USERS.ana)
-    await expect(page).toHaveURL(/\/(carteiras|perfil)$/)
+    await expect(page).toHaveURL(/\/perfil$/)
+    await expect(page.getByRole('main').getByLabel('Nome de exibição')).toHaveValue(USERS.ana.name)
   })
 
   test.describe('sessão curta', () => {
@@ -81,8 +82,8 @@ test.describe('Autenticação', () => {
       await app.login(USERS.ana, '/perfil')
       await page.clock.install()
       await page.clock.fastForward('00:31')
-      await page.getByRole('navigation', { name: 'Conta' }).getByRole('link', { name: 'Carteiras' }).click()
-      await expect(page).toHaveURL(/motivo=expirada/)
+      await app.open('/carteiras')
+      await expect(page).toHaveURL(/\/entrar\?.*motivo=expirada/)
     })
   })
 
