@@ -146,6 +146,7 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
   const [connectedId, setConnectedId] = useState<string | null>(null)
   const [review, setReview] = useState<{ quote: Quote; key: string; values: CheckoutValues } | null>(null)
   const [conflict, setConflict] = useState<string | null>(null)
+  const reviewTriggerRef = useRef<HTMLButtonElement>(null)
 
   const connect = useMutation({
     mutationFn: (id: string) => walletsApi.connect(id),
@@ -467,6 +468,7 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
           </fieldset>
 
           <button
+            ref={reviewTriggerRef}
             type="submit"
             disabled={quote.isPending || issues.length > 0}
             className="mt-6 h-[60px] w-full rounded-[10px] bg-primary text-base font-bold text-primary-foreground hover:bg-primary/85 disabled:opacity-50 md:h-[43px] md:rounded-[6px]"
@@ -477,7 +479,14 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
       </form>
 
       <Dialog open={review !== null} onOpenChange={(open) => !open && !placeOrder.isPending && setReview(null)}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-card sm:max-w-lg" showCloseButton={!placeOrder.isPending}>
+        <DialogContent
+          className="max-h-[90dvh] overflow-y-auto bg-card sm:max-w-lg"
+          showCloseButton={!placeOrder.isPending}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault()
+            reviewTriggerRef.current?.focus()
+          }}
+        >
           <DialogHeader>
             <DialogTitle>Revise seu pedido</DialogTitle>
             <DialogDescription>Os valores abaixo foram confirmados agora pela API e serão cobrados na rede {NETWORK_LABELS[network]}.</DialogDescription>

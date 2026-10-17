@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { ArrowLeft, Heart, Mail, Minus, Plus, Search, ShoppingCart, Star } from 'lucide-react'
@@ -52,6 +52,7 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
   const [chosenQuantity, setQuantity] = useState(1)
   const [activeImage, setActiveImage] = useState(0)
   const [zoomOpen, setZoomOpen] = useState(false)
+  const zoomTriggerRef = useRef<HTMLButtonElement>(null)
   const [tab, setTab] = useState<'detalhes' | 'avaliacoes'>('detalhes')
 
   const editionId = nft.editions.some((candidate) => candidate.id === chosenEditionId && candidate.available > 0)
@@ -148,6 +149,7 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
             <div className="relative bg-card p-4">
               <NftImage image={nft.gallery[activeImage]} sizes="(min-width: 1024px) 384px, 40vw" priority className="size-[min(384px,38vw)] rounded-[15px]" />
               <button
+                ref={zoomTriggerRef}
                 type="button"
                 onClick={() => setZoomOpen(true)}
                 aria-label="Ampliar imagem"
@@ -329,7 +331,13 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
       </div>
 
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
-        <DialogContent className="max-w-[min(90vw,720px)] bg-card p-3 sm:max-w-[min(90vw,720px)]">
+        <DialogContent
+          className="max-w-[min(90vw,720px)] bg-card p-3 sm:max-w-[min(90vw,720px)]"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault()
+            zoomTriggerRef.current?.focus()
+          }}
+        >
           <DialogTitle className="sr-only">{nft.name}</DialogTitle>
           <DialogDescription className="sr-only">{nft.gallery[activeImage].alt}</DialogDescription>
           <NftImage image={nft.gallery[activeImage]} sizes="720px" className="w-full rounded-[12px]" />
