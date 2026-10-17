@@ -504,15 +504,19 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
                   {conflict ?? 'Os preços, a disponibilidade ou as taxas mudaram desde a sua revisão.'} Confira os novos valores e confirme novamente.
                 </FormAlert>
               )}
-              <ul className="flex flex-col gap-2">
+              <ul className="flex flex-col gap-3">
                 {review.quote.items.map((line) => {
                   const item = items.find((candidate) => candidate.id === line.itemId)
                   return (
-                    <li key={line.itemId} className="flex justify-between gap-3">
-                      <span>
-                        {item?.name ?? line.nftId} ({item?.editionLabel}) × {line.quantity}
+                    <li key={line.itemId} className="flex items-center gap-3">
+                      {item && <NftImage image={item.image} sizes="44px" decorative className="size-11 shrink-0 rounded-[6px]" />}
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-bold">{item?.name ?? line.nftId}</span>
+                        <span className="block text-xs text-text-secondary">
+                          Edição {item?.editionLabel} · {line.quantity} unidade(s)
+                        </span>
                       </span>
-                      <span className="font-bold text-text-accent">{formatEth(line.lineTotalEth)} ETH</span>
+                      <span className="font-bold whitespace-nowrap text-text-accent">{formatEth(line.lineTotalEth)} ETH</span>
                     </li>
                   )
                 })}

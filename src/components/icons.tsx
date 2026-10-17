@@ -141,3 +141,20 @@ export function FacebookLogoIcon(props: IconProps) {
     </svg>
   )
 }
+
+export function ThankYouIcon(props: IconProps) {
+  return (
+    <svg width={56} height={56} viewBox="0 0 56 56" fill="none" aria-hidden="true" focusable="false" {...props}>
+      <path d="M6 25L28 9L50 25" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M11 31V5.5C11 4.67 11.67 4 12.5 4H43.5C44.33 4 45 4.67 45 5.5V31" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <text x="28" y="14.5" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="currentColor" fontFamily="inherit">
+        THANK
+      </text>
+      <text x="28" y="23" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="currentColor" fontFamily="inherit">
+        YOU
+      </text>
+      <path d="M6 25V50.5C6 51.33 6.67 52 7.5 52H48.5C49.33 52 50 51.33 50 50.5V25L28 39L6 25Z" fill="var(--card)" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M6 52L23 36.5M50 52L33 36.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}

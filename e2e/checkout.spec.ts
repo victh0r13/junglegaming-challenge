@@ -9,7 +9,7 @@ test.describe('Pagamento', () => {
 
     await connectWallet(app)
     const dialog = await openReview(app)
-    await expect(dialog.getByText('Golden Signal #160 (1/50) × 2')).toBeVisible()
+    await expect(dialog.getByRole('listitem').filter({ hasText: 'Golden Signal #160' })).toContainText('Edição 1/50 · 2 unidade(s)')
     await expect(dialog.getByText('0.718 ETH')).toBeVisible()
     await dialog.getByRole('button', { name: 'Confirmar pagamento' }).click()
 
