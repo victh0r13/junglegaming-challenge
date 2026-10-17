@@ -2,6 +2,8 @@ import { useRef, useState, type ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
+import { Heart } from 'lucide-react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import type { User } from '@/api/contracts'
@@ -14,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { nftListQuery } from '@/features/catalog/queries'
 import { useFavorites } from '@/features/favorites/use-favorites'
 import { applyApiFieldErrors } from '@/lib/form-errors'
+import { cn } from '@/lib/utils'
 import { AccountLayout } from './account-layout'
 import { useChangePassword, useProfile, useUpdateAvatar, useUpdateProfile } from './use-account'
 
@@ -230,9 +233,19 @@ function FavoritesList() {
           ))}
         </div>
       ) : list.length === 0 ? (
-        <p className="mt-3 text-sm text-text-secondary">Você ainda não favoritou nenhum NFT.</p>
+        <div className="mt-4 flex animate-rise-in items-center gap-4 rounded-[6px] bg-card p-5">
+          <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-surface-dark text-text-accent">
+            <Heart className="size-5" />
+          </span>
+          <p className="text-sm text-text-secondary">
+            Você ainda não favoritou nenhum NFT.{' '}
+            <Link to="/" hash="catalogo" className="font-bold text-text-accent underline-offset-4 hover:underline">
+              Explorar o mercado
+            </Link>
+          </p>
+        </div>
       ) : (
-        <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3">
+        <div className={cn('mt-4 grid grid-cols-2 gap-4 md:grid-cols-3', nfts.data && 'stagger-children')}>
           {nfts.data
             ? nfts.data.items.map((nft) => <NftCard key={nft.id} nft={nft} />)
             : list.map((id) => <NftCardSkeleton key={id} />)}

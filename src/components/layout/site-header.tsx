@@ -10,15 +10,16 @@ type SiteHeaderProps = {
   withDivider?: boolean
 }
 
-const navItemClass = 'block border-b-[3px] pb-[21px] text-base whitespace-nowrap transition-colors'
+const navItemClass =
+  'relative block pb-6 text-base whitespace-nowrap transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:bg-primary after:transition-[scale] after:duration-300 after:ease-out'
 
 export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteHeaderProps) {
   const itemClass = (section: NavSection) =>
     cn(
       navItemClass,
       active === section
-        ? 'border-primary font-bold text-text-accent'
-        : 'border-transparent text-foreground hover:text-text-accent',
+        ? 'font-bold text-text-accent after:scale-x-100'
+        : 'text-foreground after:scale-x-0 hover:text-text-accent hover:after:scale-x-100',
     )
 
   return (
@@ -50,7 +51,7 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
                 <span
                   aria-disabled="true"
                   title="Disponível em breve"
-                  className={cn(navItemClass, 'cursor-not-allowed border-transparent text-foreground')}
+                  className={cn(navItemClass, 'cursor-not-allowed text-foreground after:scale-x-0')}
                 >
                   {label}
                 </span>
@@ -77,8 +78,9 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
             <CartIcon />
             {cartCount > 0 && (
               <span
+                key={cartCount}
                 aria-hidden="true"
-                className="absolute -top-0.5 left-[13px] grid size-5 place-items-center rounded-full border-2 border-background bg-primary text-[10px] font-medium text-primary-foreground"
+                className="absolute -top-0.5 left-[13px] grid size-5 animate-badge-bump place-items-center rounded-full border-2 border-background bg-primary text-[10px] font-medium text-primary-foreground"
               >
                 {cartCount > 9 ? '9+' : cartCount}
               </span>

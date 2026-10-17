@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronDown, ChevronLeft, ChevronRight, Search, SlidersHorizontal } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, CloudOff, Search, SearchX, SlidersHorizontal } from 'lucide-react'
 import { getErrorMessage } from '@/api/http'
 import { NftCard, NftCardSkeleton } from '@/components/nft/nft-card'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -90,8 +90,8 @@ export function CatalogSection({ search }: { search: CatalogSearch }) {
                         aria-pressed={active}
                         onClick={() => update({ aba: tab === 'todos' ? undefined : tab })}
                         className={cn(
-                          'border-b-2 pb-1.5 transition-colors',
-                          active ? 'border-primary text-text-accent' : 'border-transparent text-foreground hover:text-text-accent',
+                          'relative pb-1.5 transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-primary after:transition-[scale] after:duration-300 after:ease-out',
+                          active ? 'text-text-accent after:scale-x-100' : 'text-foreground after:scale-x-0 hover:text-text-accent hover:after:scale-x-50',
                         )}
                       >
                         {TAB_LABELS[tab]}
@@ -117,6 +117,7 @@ export function CatalogSection({ search }: { search: CatalogSearch }) {
               aria-busy={isInitialLoading || isRefreshing}
               className={cn(
                 'grid grid-cols-2 gap-x-4 gap-y-10 transition-opacity md:grid-cols-3 md:gap-x-6 md:gap-y-[72px] xl:gap-x-[34px]',
+                !isInitialLoading && 'stagger-children',
                 isRefreshing && 'opacity-60',
               )}
             >
@@ -215,7 +216,7 @@ function Pagination({ page, totalPages, onChange }: { page: number; totalPages: 
               onClick={() => onChange(candidate)}
               aria-current={candidate === page ? 'page' : undefined}
               aria-label={`Página ${candidate}`}
-              className={cn(itemClass, candidate === page ? 'border-primary bg-primary font-bold text-primary-foreground' : 'hover:border-primary')}
+              className={cn(itemClass, candidate === page ? 'border-primary bg-primary font-bold text-primary-foreground' : 'hover:border-primary hover:text-text-accent')}
             >
               {candidate}
             </button>
@@ -234,7 +235,10 @@ function Pagination({ page, totalPages, onChange }: { page: number; totalPages: 
 function EmptyState({ hasFilters, search }: { hasFilters: boolean; search: CatalogSearch }) {
   const { clearFilters, update } = useCatalogNavigation(search)
   return (
-    <div className="flex flex-col items-start gap-3 rounded-[6px] bg-card p-8">
+    <div className="flex animate-rise-in flex-col items-start gap-3 rounded-[6px] bg-card p-8">
+      <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-surface-dark text-text-accent">
+        <SearchX className="size-6" />
+      </span>
       <p className="text-lg font-bold">Nenhum NFT encontrado</p>
       <p className="text-sm leading-6 text-text-secondary">
         {hasFilters ? 'Tente remover alguns filtros ou buscar por outro termo.' : 'Ainda não há NFTs listados nesta seção.'}
@@ -254,7 +258,10 @@ function EmptyState({ hasFilters, search }: { hasFilters: boolean; search: Catal
 
 function CatalogError({ message, onRetry, retrying }: { message: string; onRetry: () => void; retrying: boolean }) {
   return (
-    <div role="alert" className="flex flex-col items-start gap-3 rounded-[6px] border border-destructive/50 bg-card p-8">
+    <div role="alert" className="flex animate-rise-in flex-col items-start gap-3 rounded-[6px] border border-destructive/50 bg-card p-8">
+      <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-destructive/15 text-destructive">
+        <CloudOff className="size-6" />
+      </span>
       <p className="text-lg font-bold">Não foi possível carregar o catálogo</p>
       <p className="text-sm leading-6 text-text-secondary">{message}</p>
       <button

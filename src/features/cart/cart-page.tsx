@@ -1,6 +1,6 @@
 import { useId, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
-import { AlertTriangle, ArrowLeft, Minus, Plus, Trash2, X } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, Minus, Plus, ShoppingCart, Trash2, X } from 'lucide-react'
 import { toast } from 'sonner'
 import type { CartItem } from '@/api/contracts'
 import { getErrorMessage, isApiError } from '@/api/http'
@@ -130,7 +130,10 @@ export function CartPage() {
               </button>
             </div>
           ) : items.length === 0 ? (
-            <div className="mt-6 flex flex-col items-start gap-3 rounded-[6px] bg-card p-8">
+            <div className="mt-6 flex animate-rise-in flex-col items-start gap-3 rounded-[6px] bg-card p-8">
+              <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-surface-dark text-text-accent">
+                <ShoppingCart className="size-6" />
+              </span>
               <p className="text-lg font-bold">Seu carrinho está vazio</p>
               <p className="text-sm text-text-secondary">Explore o mercado e adicione os NFTs que você quer colecionar.</p>
               <Link to="/" hash="catalogo" className="rounded-[6px] bg-primary px-4 py-2 font-bold text-primary-foreground">
@@ -138,7 +141,7 @@ export function CartPage() {
               </Link>
             </div>
           ) : (
-            <ul className="mt-3 flex flex-col gap-3">
+            <ul className="stagger-children mt-3 flex flex-col gap-3">
               {items.map((item) => (
                 <CartLine key={item.id} item={item} />
               ))}
@@ -224,7 +227,7 @@ function CartLine({ item }: { item: CartItem }) {
     <li
       aria-busy={pending}
       className={cn(
-        'relative grid grid-cols-[100px_minmax(0,1fr)] gap-x-4 gap-y-2 rounded-[10px] bg-card p-0 pr-3 md:grid-cols-[64px_minmax(0,1fr)_110px_120px_110px_40px] md:items-center md:rounded-none md:pr-0',
+        'relative grid grid-cols-[100px_minmax(0,1fr)] gap-x-4 gap-y-2 rounded-[10px] bg-card p-0 pr-3 transition-opacity md:grid-cols-[64px_minmax(0,1fr)_110px_120px_110px_40px] md:items-center md:rounded-none md:pr-0',
         flagged && 'outline outline-primary/60',
         pending && 'opacity-70',
       )}
@@ -262,24 +265,26 @@ function CartLine({ item }: { item: CartItem }) {
             onClick={() => changeQuantity(item.quantity - 1)}
             disabled={pending || item.quantity <= 1}
             aria-label="Diminuir quantidade"
-            className="grid h-6 w-5 place-items-center rounded-full bg-primary text-primary-foreground disabled:opacity-40"
+            className="grid h-6 w-5 place-items-center rounded-full bg-primary text-primary-foreground transition-[opacity,background-color] hover:bg-primary/85 disabled:opacity-40"
           >
             <Minus className="size-3" aria-hidden="true" />
           </button>
-          <output aria-live="polite" className="min-w-4 text-center">
-            {item.quantity}
+          <output aria-live="polite" className="min-w-4 text-center tabular-nums">
+            <span key={item.quantity} className="inline-block animate-in fade-in slide-in-from-bottom-1 duration-200">
+              {item.quantity}
+            </span>
           </output>
           <button
             type="button"
             onClick={() => changeQuantity(item.quantity + 1)}
             disabled={pending || item.quantity >= item.maxQuantity}
             aria-label="Aumentar quantidade"
-            className="grid h-6 w-5 place-items-center rounded-full bg-primary text-primary-foreground disabled:opacity-40"
+            className="grid h-6 w-5 place-items-center rounded-full bg-primary text-primary-foreground transition-[opacity,background-color] hover:bg-primary/85 disabled:opacity-40"
           >
             <Plus className="size-3" aria-hidden="true" />
           </button>
         </div>
-        <button type="button" onClick={removeItem} disabled={pending} aria-label={`Remover ${item.name}`} className="text-text-secondary hover:text-destructive md:hidden">
+        <button type="button" onClick={removeItem} disabled={pending} aria-label={`Remover ${item.name}`} className="text-text-secondary transition-colors hover:text-destructive md:hidden">
           <Trash2 className="size-5" aria-hidden="true" />
         </button>
       </div>
@@ -292,7 +297,7 @@ function CartLine({ item }: { item: CartItem }) {
         onClick={removeItem}
         disabled={pending}
         aria-label={`Remover ${item.name}`}
-        className="hidden size-8 place-items-center text-text-secondary hover:text-destructive md:grid"
+        className="hidden size-8 place-items-center rounded-full text-text-secondary transition-colors hover:bg-destructive/10 hover:text-destructive md:grid"
       >
         <Trash2 className="size-5" aria-hidden="true" />
       </button>
@@ -321,7 +326,7 @@ function CouponForm({ coupon, disabled }: { coupon: { code: string; percentOff: 
 
   if (coupon) {
     return (
-      <div className="mt-5 flex items-center justify-between gap-3 rounded-[5px] border border-primary/60 bg-surface-dark px-3 py-2 text-sm">
+      <div className="mt-5 flex animate-in items-center justify-between gap-3 rounded-[5px] border border-primary/60 bg-surface-dark px-3 py-2 text-sm fade-in zoom-in-95 duration-300">
         <span>
           Cupom <strong className="text-text-accent">{coupon.code}</strong> · {coupon.percentOff}% off
         </span>
@@ -367,7 +372,7 @@ function CouponForm({ coupon, disabled }: { coupon: { code: string; percentOff: 
         </button>
       </div>
       {error && (
-        <p id={errorId} role="alert" className="text-xs text-destructive">
+        <p id={errorId} role="alert" className="animate-in text-xs text-destructive fade-in slide-in-from-top-1 duration-200">
           {error}
         </p>
       )}

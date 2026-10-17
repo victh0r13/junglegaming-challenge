@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { Quote } from '@/api/contracts'
+import { FlashOnChange } from '@/components/flash-on-change'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatEth } from '@/lib/eth'
 import { cn } from '@/lib/utils'
@@ -43,7 +44,7 @@ export function OrderSummary({ quote, loading, updating, className, feeHint = 'T
       <div className="flex items-center justify-between border-t border-border pt-4">
         <span className="text-base font-bold">Total</span>
         <span className="text-lg font-bold text-text-accent" aria-live="polite">
-          {money(quote.totalEth)}
+          <FlashOnChange value={quote.totalEth}>{money(quote.totalEth)}</FlashOnChange>
         </span>
       </div>
     </div>

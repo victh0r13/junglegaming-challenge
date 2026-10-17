@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
@@ -10,8 +10,15 @@ import { highlightsQuery } from './queries'
 export function Hero() {
   const { data } = useQuery(highlightsQuery())
   const [active, setActive] = useState(0)
+  const [changed, setChanged] = useState(false)
   const slides = data?.hero ?? []
   const current = slides[active]
+  const slideAnimation = changed ? 'animate-in fade-in zoom-in-95 duration-500 ease-out' : undefined
+
+  function select(index: number) {
+    setActive(index)
+    setChanged(true)
+  }
 
   return (
     <section aria-roledescription="carrossel" aria-label="Destaques" className="page-container md:mt-8">
@@ -38,12 +45,23 @@ export function Hero() {
               EXPLORAR
             </Link>
           </div>
-          <SlideDots count={slides.length} active={active} onSelect={setActive} names={slides.map((slide) => slide.name)} />
+          <SlideDots count={slides.length} active={active} onSelect={select} names={slides.map((slide) => slide.name)} />
         </div>
         <div className="relative size-[min(450px,40vw)] shrink-0">
           {current ? (
-            <Link to="/nft/$nftId" params={{ nftId: current.id }} className="block rounded-[24px]" aria-label={`Ver ${current.name}`}>
-              <NftImage image={current.image} sizes="(min-width: 1024px) 450px, 40vw" priority className="size-full rounded-[24px]" />
+            <Link
+              key={current.id}
+              to="/nft/$nftId"
+              params={{ nftId: current.id }}
+              className={cn('group block overflow-hidden rounded-[24px]', slideAnimation)}
+              aria-label={`Ver ${current.name}`}
+            >
+              <NftImage
+                image={current.image}
+                sizes="(min-width: 1024px) 450px, 40vw"
+                priority
+                className="size-full rounded-[24px] duration-700 group-hover:scale-[1.03] motion-reduce:group-hover:scale-100"
+              />
             </Link>
           ) : (
             <Skeleton className="size-full rounded-[24px]" />
@@ -64,14 +82,14 @@ export function Hero() {
           </div>
           <div className="relative size-[138px] shrink-0">
             {current ? (
-              <NftImage image={current.image} sizes="138px" priority className="size-full rounded-[14px]" />
+              <NftImage key={current.id} image={current.image} sizes="138px" priority className={cn('size-full rounded-[14px]', slideAnimation)} />
             ) : (
               <Skeleton className="size-full rounded-[14px]" />
             )}
           </div>
         </div>
         <div className="relative mt-3 flex justify-center">
-          <SlideDots count={slides.length} active={active} onSelect={setActive} names={slides.map((slide) => slide.name)} />
+          <SlideDots count={slides.length} active={active} onSelect={select} names={slides.map((slide) => slide.name)} />
         </div>
       </div>
     </section>
@@ -81,9 +99,18 @@ export function Hero() {
 type SlideDotsProps = { count: number; active: number; onSelect: (index: number) => void; names: string[] }
 
 function SlideDots({ count, active, onSelect, names }: SlideDotsProps) {
-  if (count === 0) return <span className="h-2" />
+  if (count === 0) return <span className="h-6" />
+
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+    event.preventDefault()
+    const next = (active + (event.key === 'ArrowRight' ? 1 : count - 1)) % count
+    onSelect(next)
+    event.currentTarget.querySelectorAll('button')[next]?.focus()
+  }
+
   return (
-    <div className="flex gap-1" role="group" aria-label="Escolher destaque">
+    <div className="flex gap-1" role="group" aria-label="Escolher destaque" onKeyDown={handleKeyDown}>
       {Array.from({ length: count }, (_, index) => (
         <button
           key={index}
@@ -91,9 +118,14 @@ function SlideDots({ count, active, onSelect, names }: SlideDotsProps) {
           onClick={() => onSelect(index)}
           aria-label={`Destaque ${index + 1}: ${names[index]}`}
           aria-pressed={index === active}
-          className="grid size-6 place-items-center rounded-full"
+          className="group grid h-6 min-w-6 place-items-center rounded-full"
         >
-          <span className={cn('size-2 rounded-full bg-primary transition-opacity', index === active ? 'opacity-100' : 'opacity-50')} />
+          <span
+            className={cn(
+              'h-2 rounded-full bg-primary transition-[width,opacity] duration-300 ease-out',
+              index === active ? 'w-6 opacity-100' : 'w-2 opacity-50 group-hover:opacity-80',
+            )}
+          />
         </button>
       ))}
     </div>

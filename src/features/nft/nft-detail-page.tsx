@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
-import { ArrowLeft, Heart, Mail, Minus, Plus, Search, ShoppingCart, Star } from 'lucide-react'
+import { ArrowLeft, Mail, Minus, Plus, Search, ShoppingCart, Star } from 'lucide-react'
 import { toast } from 'sonner'
 import { COLLECTION_LABELS, NETWORK_LABELS, type Edition, type NftDetail } from '@/api/contracts'
 import { getErrorMessage, isApiError } from '@/api/http'
 import { LinkedinIcon, TwitterIcon } from '@/components/icons'
 import { NotFoundPage } from '@/components/not-found-page'
 import { EthAmount } from '@/components/nft/eth-amount'
+import { FavoriteHeart } from '@/components/nft/favorite-heart'
 import { NftImage } from '@/components/nft/nft-image'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -51,6 +52,8 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
   const [chosenEditionId, setEditionId] = useState(() => pickDefaultEdition(nft))
   const [chosenQuantity, setQuantity] = useState(1)
   const [activeImage, setActiveImage] = useState(0)
+  const [galleryChanged, setGalleryChanged] = useState(false)
+  const [popKey, setPopKey] = useState(0)
   const [zoomOpen, setZoomOpen] = useState(false)
   const zoomTriggerRef = useRef<HTMLButtonElement>(null)
   const [tab, setTab] = useState<'detalhes' | 'avaliacoes'>('detalhes')
@@ -82,6 +85,17 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
     )
   }
 
+  function showImage(index: number) {
+    setActiveImage(index)
+    setGalleryChanged(true)
+  }
+
+  function toggleFavorite() {
+    setPopKey((key) => key + 1)
+    favorites.toggle(nft.id)
+  }
+
+  const imageAnimation = galleryChanged ? 'animate-in fade-in zoom-in-[0.98] duration-300 ease-out' : undefined
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/nft/${nft.id}` : `/nft/${nft.id}`
   const canBuy = Boolean(edition) && maxQuantity > 0 && !addToCart.isPending
 
@@ -101,6 +115,10 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
                 Mercado
               </Link>
             </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" className="truncate text-text-accent">
+              {nft.name}
+            </li>
           </ol>
         </nav>
       </div>
@@ -108,7 +126,34 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
       <article aria-labelledby="nft-titulo" className="md:page-container md:mt-4">
         <div className="flex flex-col md:flex-row md:gap-5">
           <div className="relative md:hidden">
-            <NftImage image={nft.gallery[activeImage]} sizes="100vw" priority className="h-[506px] w-full rounded-none" />
+            <NftImage
+              key={activeImage}
+              image={nft.gallery[activeImage]}
+              sizes="100vw"
+              priority
+              className={cn('h-[506px] w-full rounded-none', imageAnimation)}
+            />
+            {nft.gallery.length > 1 && (
+              <div className="absolute inset-x-0 bottom-32 flex justify-center gap-1" role="group" aria-label="Galeria">
+                {nft.gallery.map((image, index) => (
+                  <button
+                    key={`${image.src}-${index}`}
+                    type="button"
+                    onClick={() => showImage(index)}
+                    aria-label={`Imagem ${index + 1} de ${nft.gallery.length}`}
+                    aria-pressed={index === activeImage}
+                    className="grid h-6 min-w-6 place-items-center"
+                  >
+                    <span
+                      className={cn(
+                        'h-2 rounded-full bg-foreground shadow transition-[width,opacity] duration-300',
+                        index === activeImage ? 'w-6 opacity-100' : 'w-2 opacity-60',
+                      )}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="absolute inset-x-7 top-6 flex justify-between">
               <button
                 type="button"
@@ -120,12 +165,12 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
               </button>
               <button
                 type="button"
-                onClick={() => favorites.toggle(nft.id)}
+                onClick={toggleFavorite}
                 aria-pressed={isFavorite}
                 aria-label={isFavorite ? 'Remover dos favoritos' : 'Favoritar'}
-                className="grid size-[35px] place-items-center rounded-[10px] bg-ink/70 text-foreground"
+                className="grid size-[35px] place-items-center rounded-[10px] bg-ink/70 text-foreground backdrop-blur-sm"
               >
-                <Heart className={cn('size-4', isFavorite && 'fill-current text-text-accent')} aria-hidden="true" />
+                <FavoriteHeart filled={isFavorite} popKey={popKey} className={cn('size-4', isFavorite && 'text-text-accent')} />
               </button>
             </div>
           </div>
@@ -136,10 +181,13 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
                 <li key={`${image.src}-${index}`}>
                   <button
                     type="button"
-                    onClick={() => setActiveImage(index)}
+                    onClick={() => showImage(index)}
                     aria-label={`Imagem ${index + 1} de ${nft.gallery.length}`}
                     aria-current={index === activeImage}
-                    className={cn('block rounded-[4px] border-2', index === activeImage ? 'border-primary' : 'border-transparent hover:border-border-soft')}
+                    className={cn(
+                      'block rounded-[4px] border-2 transition-[border-color,opacity] duration-200',
+                      index === activeImage ? 'border-primary' : 'border-transparent opacity-70 hover:border-border-soft hover:opacity-100',
+                    )}
                   >
                     <NftImage image={image} sizes="71px" decorative className="size-[67px] rounded-[2px]" />
                   </button>
@@ -147,13 +195,19 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
               ))}
             </ul>
             <div className="relative bg-card p-4">
-              <NftImage image={nft.gallery[activeImage]} sizes="(min-width: 1024px) 384px, 40vw" priority className="size-[min(384px,38vw)] rounded-[15px]" />
+              <NftImage
+                key={activeImage}
+                image={nft.gallery[activeImage]}
+                sizes="(min-width: 1024px) 384px, 40vw"
+                priority
+                className={cn('size-[min(384px,38vw)] rounded-[15px]', imageAnimation)}
+              />
               <button
                 ref={zoomTriggerRef}
                 type="button"
                 onClick={() => setZoomOpen(true)}
                 aria-label="Ampliar imagem"
-                className="absolute top-2 right-2 grid size-8 place-items-center rounded-full bg-ink/70 text-foreground hover:text-text-accent"
+                className="absolute top-2 right-2 grid size-8 place-items-center rounded-full bg-ink/70 text-foreground backdrop-blur-sm transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <Search className="size-4" aria-hidden="true" />
               </button>
@@ -184,20 +238,20 @@ function NftDetailView({ nft }: { nft: NftDetail }) {
                   type="button"
                   onClick={() => add(true)}
                   disabled={!canBuy}
-                  className="h-[35px] rounded-[5px] bg-primary px-6 text-sm font-bold text-primary-foreground hover:bg-primary/85 disabled:opacity-50"
+                  className="h-[35px] rounded-[5px] bg-primary px-6 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/85 disabled:opacity-50"
                 >
                   {addToCart.isPending ? 'ADICIONANDO…' : 'COMPRAR'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => favorites.toggle(nft.id)}
+                  onClick={toggleFavorite}
                   aria-pressed={isFavorite}
                   className={cn(
                     'flex h-[35px] items-center gap-2 rounded-[5px] border border-primary px-3 text-sm transition-colors',
-                    isFavorite ? 'bg-primary/15 text-text-accent' : 'text-text-secondary hover:text-foreground',
+                    isFavorite ? 'bg-primary/15 text-text-accent' : 'text-text-secondary hover:bg-primary/10 hover:text-foreground',
                   )}
                 >
-                  <Heart className={cn('size-4', isFavorite && 'fill-current')} aria-hidden="true" />
+                  <FavoriteHeart filled={isFavorite} popKey={popKey} className="size-4" />
                   {isFavorite ? 'Favoritado' : 'Favoritar'}
                 </button>
               </div>

@@ -84,6 +84,127 @@
   --radius-2xl: calc(var(--radius) * 1.8);
 }
 
+@theme {
+  --animate-heart-pop: heart-pop 0.45s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+  --animate-badge-bump: badge-bump 0.4s ease-out;
+  --animate-price-flash: price-flash 1.2s ease-out;
+  --animate-status-pop: status-pop 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.3) both;
+  --animate-ring-out: ring-out 0.9s ease-out both;
+  --animate-rise-in: rise-in 0.45s ease-out both;
+  --animate-soft-fade: soft-fade 0.4s ease-out both;
+
+  @keyframes heart-pop {
+    0% {
+      scale: 1;
+    }
+    35% {
+      scale: 1.35;
+    }
+    100% {
+      scale: 1;
+    }
+  }
+
+  @keyframes badge-bump {
+    0% {
+      scale: 1;
+    }
+    40% {
+      scale: 1.3;
+    }
+    100% {
+      scale: 1;
+    }
+  }
+
+  @keyframes price-flash {
+    0% {
+      background-color: rgb(232 155 85 / 0.28);
+      box-shadow: 0 0 0 4px rgb(232 155 85 / 0.28);
+    }
+    100% {
+      background-color: transparent;
+      box-shadow: 0 0 0 4px transparent;
+    }
+  }
+
+  @keyframes status-pop {
+    0% {
+      scale: 0.4;
+      opacity: 0;
+    }
+    70% {
+      scale: 1.08;
+      opacity: 1;
+    }
+    100% {
+      scale: 1;
+      opacity: 1;
+    }
+  }
+
+  @keyframes ring-out {
+    0% {
+      scale: 1;
+      opacity: 0.6;
+    }
+    100% {
+      scale: 1.7;
+      opacity: 0;
+    }
+  }
+
+  @keyframes rise-in {
+    0% {
+      opacity: 0;
+      translate: 0 12px;
+    }
+    100% {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @keyframes soft-fade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+@utility stagger-children {
+  & > * {
+    animation: var(--animate-rise-in);
+  }
+  & > *:nth-child(2) {
+    animation-delay: 40ms;
+  }
+  & > *:nth-child(3) {
+    animation-delay: 80ms;
+  }
+  & > *:nth-child(4) {
+    animation-delay: 120ms;
+  }
+  & > *:nth-child(5) {
+    animation-delay: 160ms;
+  }
+  & > *:nth-child(6) {
+    animation-delay: 200ms;
+  }
+  & > *:nth-child(7) {
+    animation-delay: 240ms;
+  }
+  & > *:nth-child(8) {
+    animation-delay: 280ms;
+  }
+  & > *:nth-child(n + 9) {
+    animation-delay: 320ms;
+  }
+}
+
 @utility page-container {
   margin-inline: auto;
   width: 100%;
@@ -109,6 +230,29 @@
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }
+  button:not(:disabled):active {
+    scale: 0.97;
+  }
+  main > * {
+    animation: var(--animate-soft-fade);
+    animation-duration: 0.25s;
+  }
+}
+
+[data-sonner-toast][data-type="success"] [data-icon] {
+  color: var(--text-accent);
+}
+
+[data-sonner-toast][data-type="error"] [data-icon] {
+  color: var(--destructive);
+}
+
+[data-sonner-toast][data-type="warning"] [data-icon] {
+  color: var(--text-coral);
+}
+
+[data-sonner-toast][data-type="info"] [data-icon] {
+  color: var(--text-secondary);
 }
 
 @utility skeleton-shimmer {
@@ -141,6 +285,7 @@
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;

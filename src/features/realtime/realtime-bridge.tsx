@@ -90,8 +90,8 @@ export function RealtimeBridge() {
   return (
     <div role="status" aria-live="polite" className="pointer-events-none fixed top-3 left-1/2 z-50 -translate-x-1/2">
       {state === 'reconnecting' && (
-        <p className="flex items-center gap-2 rounded-full border border-border-soft bg-surface-dark px-4 py-2 text-xs text-text-secondary shadow-lg">
-          <WifiOff className="size-4 text-text-accent" aria-hidden="true" />
+        <p className="flex animate-in items-center gap-2 rounded-full border border-border-soft bg-surface-dark px-4 py-2 text-xs text-text-secondary shadow-lg fade-in slide-in-from-top-2 duration-300">
+          <WifiOff className="size-4 animate-pulse text-text-accent" aria-hidden="true" />
           Atualizações em tempo real indisponíveis. Reconectando…
         </p>
       )}

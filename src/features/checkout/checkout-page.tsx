@@ -419,7 +419,13 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
             {[primary, secondary].filter((candidate): candidate is Wallet => Boolean(candidate)).map((candidate) => {
               const selected = candidate.id === wallet.id
               return (
-                <div key={candidate.id} className={cn('flex flex-col gap-2 rounded-[2px] border p-3', selected ? 'border-foreground' : 'border-border')}>
+                <div
+                  key={candidate.id}
+                  className={cn(
+                    'flex flex-col gap-2 rounded-[2px] border p-3 transition-colors duration-200',
+                    selected ? 'border-foreground bg-surface-dark/40' : 'border-border hover:border-border-soft',
+                  )}
+                >
                   <label className="flex cursor-pointer items-center gap-3 text-sm">
                     <input
                       type="radio"
@@ -435,7 +441,7 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
                       </span>
                     </span>
                     {connectedId === candidate.id && (
-                      <span className="flex items-center gap-1 text-xs text-text-accent">
+                      <span className="flex animate-in items-center gap-1 text-xs text-text-accent fade-in zoom-in-90 duration-300">
                         <CheckCircle2 className="size-4" aria-hidden="true" /> Conectada
                       </span>
                     )}

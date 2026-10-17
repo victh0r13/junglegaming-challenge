@@ -18,8 +18,12 @@ export function SpotlightBanner() {
       </div>
       <div className="mt-4">
         {spotlight ? (
-          <Link to="/nft/$nftId" params={{ nftId: spotlight.id }} className="block rounded-[22px]" aria-label={`Ver ${spotlight.name}`}>
-            <NftImage image={spotlight.image} sizes="310px" className="h-[368px] w-full rounded-[22px]" />
+          <Link to="/nft/$nftId" params={{ nftId: spotlight.id }} className="group block overflow-hidden rounded-[22px]" aria-label={`Ver ${spotlight.name}`}>
+            <NftImage
+              image={spotlight.image}
+              sizes="310px"
+              className="h-[368px] w-full rounded-[22px] duration-700 group-hover:scale-105 motion-reduce:group-hover:scale-100"
+            />
           </Link>
         ) : (
           <Skeleton className="h-[368px] w-full rounded-[22px]" />

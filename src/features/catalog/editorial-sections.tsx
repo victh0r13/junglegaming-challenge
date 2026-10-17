@@ -30,7 +30,7 @@ export function PromoSection() {
   return (
     <section aria-label="Coleções em destaque" className="page-container mt-24 hidden gap-7 md:grid md:grid-cols-2">
       {PROMOS.map((promo) => (
-        <article key={promo.title} className="flex h-[250px] overflow-hidden bg-card">
+        <article key={promo.title} className="group flex h-[250px] overflow-hidden bg-card">
           <img
             src={`${promo.image}-320.webp`}
             srcSet={`${promo.image}-320.webp 320w, ${promo.image}-640.webp 640w`}
@@ -39,7 +39,7 @@ export function PromoSection() {
             width={290}
             height={250}
             loading="lazy"
-            className="h-full w-1/2 object-cover"
+            className="h-full w-1/2 object-cover transition-[scale] duration-700 ease-out group-hover:scale-105 motion-reduce:group-hover:scale-100"
           />
           <div className="flex w-1/2 flex-col items-end justify-center gap-3 px-6 text-right">
             <h3 className="text-[15px] leading-5 font-bold">{promo.title}</h3>
@@ -48,9 +48,9 @@ export function PromoSection() {
               to="/"
               search={promo.search}
               hash="catalogo"
-              className="mt-1 inline-flex h-9 items-center gap-1 rounded-[6px] bg-primary px-4 text-[13px] font-bold text-primary-foreground hover:bg-primary/85"
+              className="group/link mt-1 inline-flex h-9 items-center gap-1 rounded-[6px] bg-primary px-4 text-[13px] font-bold text-primary-foreground transition-colors hover:bg-primary/85"
             >
-              Explorar <ArrowRight className="size-4" aria-hidden="true" />
+              Explorar <ArrowRight className="size-4 transition-[translate] group-hover/link:translate-x-0.5" aria-hidden="true" />
               <span className="sr-only">{promo.title}</span>
             </Link>
           </div>

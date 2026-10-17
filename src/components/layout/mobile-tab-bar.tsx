@@ -77,15 +77,16 @@ function TabGroup({ tabs, active, cartCount, className }: TabGroupProps) {
               aria-current={isActive ? 'page' : undefined}
               aria-label={showBadge ? `${label}, ${cartCount} ${cartCount === 1 ? 'item' : 'itens'}` : label}
               className={cn(
-                'relative grid size-11 -translate-y-3 place-items-center rounded-md transition-colors',
-                isActive ? 'text-text-accent' : 'text-text-secondary hover:text-foreground',
+                'relative grid size-11 -translate-y-3 place-items-center rounded-md transition-colors after:absolute after:bottom-0.5 after:size-1 after:rounded-full after:bg-text-accent after:transition-[scale] after:duration-300',
+                isActive ? 'text-text-accent after:scale-100' : 'text-text-secondary after:scale-0 hover:text-foreground',
               )}
             >
               <Icon className="size-5" />
               {showBadge && (
                 <span
+                  key={cartCount}
                   aria-hidden="true"
-                  className="absolute top-1 right-0.5 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] leading-4 font-bold text-primary-foreground"
+                  className="absolute top-1 right-0.5 grid min-w-4 animate-badge-bump place-items-center rounded-full bg-primary px-1 text-[9px] leading-4 font-bold text-primary-foreground"
                 >
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>

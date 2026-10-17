@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { NftImage as NftImageData } from '@/api/contracts'
 import { cn } from '@/lib/utils'
 
@@ -12,8 +13,14 @@ type NftImageProps = {
 const WIDTHS = [320, 640, 960] as const
 
 export function NftImage({ image, sizes, className, priority = false, decorative = false }: NftImageProps) {
+  const [loaded, setLoaded] = useState(priority)
+  const reveal = () => setLoaded(true)
+
   return (
     <img
+      ref={(node) => {
+        if (node?.complete && node.naturalWidth > 0) reveal()
+      }}
       src={`${image.src}-640.webp`}
       srcSet={WIDTHS.map((width) => `${image.src}-${width}.webp ${width}w`).join(', ')}
       sizes={sizes}
@@ -23,7 +30,13 @@ export function NftImage({ image, sizes, className, priority = false, decorative
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}
       decoding={priority ? 'sync' : 'async'}
-      className={cn('aspect-square object-cover', className)}
+      onLoad={reveal}
+      onError={reveal}
+      className={cn(
+        'aspect-square bg-surface-dark object-cover transition-[opacity,scale] duration-500 ease-out',
+        loaded ? 'opacity-100' : 'opacity-0',
+        className,
+      )}
     />
   )
 }

@@ -61,17 +61,33 @@ function OrderReceipt({ order }: { order: Order }) {
     <div className="page-container py-6 md:py-10">
       <article
         aria-labelledby="pedido-titulo"
-        className="mx-auto max-w-[578px] overflow-hidden rounded-[8px] border-b-[10px] border-primary bg-card"
+        className="mx-auto max-w-[578px] animate-rise-in overflow-hidden rounded-[8px] border-b-[10px] border-primary bg-card"
       >
         <header className="flex flex-col items-center gap-4 px-6 pt-6 pb-8 text-center">
-          <span
-            className={cn(
-              'grid size-20 place-items-center rounded-full',
-              order.status === 'confirmed' ? 'bg-primary text-primary-foreground' : order.status === 'declined' ? 'bg-destructive/20 text-destructive' : 'bg-surface-dark text-text-accent',
+          <span key={order.status} className="relative grid size-20 place-items-center" aria-hidden="true">
+            {order.status === 'pending' ? (
+              <span className="absolute inset-0 animate-pulse rounded-full bg-primary/15" />
+            ) : (
+              <span
+                className={cn(
+                  'absolute inset-0 animate-ring-out rounded-full border-2',
+                  order.status === 'confirmed' ? 'border-primary' : 'border-destructive',
+                )}
+              />
             )}
-            aria-hidden="true"
-          >
-            {order.status === 'confirmed' ? <Check className="size-10" /> : order.status === 'declined' ? <X className="size-10" /> : <Loader2 className="size-10 animate-spin" />}
+            <span
+              className={cn(
+                'relative grid size-20 place-items-center rounded-full',
+                order.status !== 'pending' && 'animate-status-pop',
+                order.status === 'confirmed'
+                  ? 'bg-primary text-primary-foreground'
+                  : order.status === 'declined'
+                    ? 'bg-destructive/20 text-destructive'
+                    : 'bg-surface-dark text-text-accent',
+              )}
+            >
+              {order.status === 'confirmed' ? <Check className="size-10" /> : order.status === 'declined' ? <X className="size-10" /> : <Loader2 className="size-10 animate-spin" />}
+            </span>
           </span>
           <h1 id="pedido-titulo" className="text-2xl font-bold">
             {headline}
