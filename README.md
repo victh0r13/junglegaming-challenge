@@ -2,6 +2,8 @@
 
 Front-end do desafio técnico da Jungle Gaming: catálogo, detalhe, carrinho, pagamento com carteira, perfil do colecionador e atualizações em tempo real. Toda a API (REST e Socket.IO) é simulada no navegador com MSW, então o projeto roda sem back-end.
 
+**Aplicação publicada:** https://junglegaming-challenge2.vercel.app/
+
 Decisões de arquitetura, trade-offs e desvios do Figma estão em [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Stack
