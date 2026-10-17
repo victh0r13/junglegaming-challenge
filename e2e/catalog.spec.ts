@@ -112,6 +112,21 @@ test.describe('Catálogo', () => {
     await expect(catalog(app).getByRole('button', { name: 'Em alta' })).toHaveAttribute('aria-pressed', 'true')
   })
 
+  test('novos lançamentos trazem só NFTs com badge Novo, do mais recente para o mais antigo', async ({ app, page }) => {
+    await app.open('/')
+    await expect(cards(app).first()).toContainText('Novo')
+
+    await catalog(app).getByRole('button', { name: 'Novos lançamentos' }).click()
+    await expect(page).toHaveURL(/aba=novos/)
+    await expect(resultStatus(app)).toHaveText('8 NFTs encontrados. Página 1 de 1.')
+    await expect(cards(app)).toHaveCount(8)
+    for (const card of await cards(app).all()) await expect(card).toContainText('Novo')
+    await expect(cards(app).first().getByRole('heading')).toHaveText('Emerald Ape #042')
+
+    await app.open('/?pagina=2')
+    for (const card of await cards(app).all()) await expect(card).not.toContainText('Novo')
+  })
+
   test('página fora do intervalo é corrigida para a última página', async ({ app, page }) => {
     await app.open('/?pagina=99')
     await expect(page).toHaveURL(/pagina=5/)

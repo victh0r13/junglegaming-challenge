@@ -65,6 +65,11 @@ const GENERATED_NAMES: [string, ArtFamily][] = [
 
 const NEWEST_DATE = Date.UTC(2026, 8, 30, 12)
 const DAY = 86_400_000
+export const NEW_RELEASE_WINDOW_DAYS = 14
+
+export function isNewRelease(createdAt: string, newest: number) {
+  return newest - Date.parse(createdAt) <= NEW_RELEASE_WINDOW_DAYS * DAY
+}
 
 function editionsFor(index: number, basePrice: string): Edition[] {
   return [
@@ -89,6 +94,7 @@ export function createNftFixtures(): SeedNft[] {
 
   return items.map((item, index): SeedNft => {
     const editions = editionsFor(index, item.price)
+    const createdAt = new Date(NEWEST_DATE - index * 2 * DAY).toISOString()
     const id = item.name
       .toLowerCase()
       .replace(/#/g, '')
@@ -112,9 +118,9 @@ export function createNftFixtures(): SeedNft[] {
       priceEth: item.price,
       previousPriceEth: 'previous' in item && typeof item.previous === 'string' ? item.previous : null,
       available: editions.reduce((sum, edition) => sum + edition.available, 0),
-      badge: index % 7 === 3 ? 'raro' : index > 0 && index < 4 ? 'novo' : null,
+      badge: isNewRelease(createdAt, NEWEST_DATE) ? 'novo' : index % 7 === 3 ? 'raro' : null,
       version: 1,
-      createdAt: new Date(NEWEST_DATE - index * 2 * DAY).toISOString(),
+      createdAt,
       description:
         'Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.',
       details: [

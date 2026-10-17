@@ -10,12 +10,11 @@ import {
 import { compareEth, isEth } from '@/lib/eth'
 import { db } from '../db'
 import { findNft, toDetail, toSummary } from '../domain'
-import type { SeedNft } from '../fixtures/nfts'
+import { isNewRelease, type SeedNft } from '../fixtures/nfts'
 import { API, fail, route } from '../http'
 import { scenario } from '../scenarios'
 
 const DEFAULT_PAGE_SIZE = 9
-const NEW_RELEASE_WINDOW_DAYS = 30
 const TRENDING_THRESHOLD = 60
 
 function normalize(value: string) {
@@ -33,7 +32,7 @@ function listParam(url: URL, name: string) {
 }
 
 function matchesTab(nft: SeedNft, tab: string | null, newest: number) {
-  if (tab === 'novos') return newest - Date.parse(nft.createdAt) <= NEW_RELEASE_WINDOW_DAYS * 86_400_000
+  if (tab === 'novos') return isNewRelease(nft.createdAt, newest)
   if (tab === 'alta') return nft.trending >= TRENDING_THRESHOLD
   return true
 }

@@ -24,7 +24,7 @@ export type DbOrder = Order & {
 export type DbWallet = Wallet & { userId: string }
 
 export type DbState = {
-  schema: 3
+  schema: 4
   seq: number
   users: DbUser[]
   sessions: DbSession[]
@@ -79,7 +79,7 @@ async function createSeed(): Promise<DbState> {
   )
   const updatedAt = '2026-10-01T12:00:00.000Z'
   return {
-    schema: 3,
+    schema: 4,
     seq: 1000,
     users,
     sessions: [],
@@ -149,7 +149,7 @@ let state: DbState | null = null
 export const db = {
   async init() {
     const saved = storage.get<DbState>(STORAGE_KEY)
-    state = saved?.schema === 3 ? saved : await createSeed()
+    state = saved?.schema === 4 ? saved : await createSeed()
     db.persist()
   },
   async reset() {
