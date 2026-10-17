@@ -25,3 +25,7 @@ dist-ssr
 
 # Arquivos temporários do gerador de rotas
 .tanstack
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
