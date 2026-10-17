@@ -1,11 +1,12 @@
 import { ws } from 'msw'
 import { toSocketIo } from '@mswjs/socket.io-binding'
 import type { NftUpdatedEvent, OrderUpdatedEvent } from '@/api/contracts'
+import { REALTIME_URL } from '@/api/config'
 import { db } from './db'
 import type { SeedNft } from './fixtures/nfts'
 import { nowIso, userIdForToken } from './http'
 
-const realtime = ws.link(/\/socket\.io\//)
+const realtime = ws.link(REALTIME_URL.replace(/^http/, 'ws'))
 
 type RealtimeClient = {
   io: ReturnType<typeof toSocketIo>

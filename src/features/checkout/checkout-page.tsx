@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useProfile, useWallets } from '@/features/account/use-account'
 import { useCurrentUser } from '@/features/auth/use-auth'
 import { OrderSummary } from '@/features/cart/order-summary'
-import { useCart, useQuote } from '@/features/cart/use-cart'
+import { useAcknowledgeCart, useCart, useQuote } from '@/features/cart/use-cart'
 import { usePlaceOrder, useRecoverPendingOrder } from '@/features/orders/use-order'
 import { formatEth } from '@/lib/eth'
 import { applyApiFieldErrors } from '@/lib/form-errors'
@@ -166,7 +166,10 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
   const items = cart.data?.items ?? []
   const currentQuote = quote.data
   const reviewOutdated = review && currentQuote && quoteSignature(review.quote) !== quoteSignature(currentQuote)
-  const blockingIssues = currentQuote?.issues ?? []
+  const issues = currentQuote?.issues ?? []
+  const blockingIssues = issues.filter((issue) => issue.code !== 'PRICE_CHANGED')
+  const priceIssues = issues.filter((issue) => issue.code === 'PRICE_CHANGED')
+  const acknowledge = useAcknowledgeCart()
 
   useEffect(() => {
     if (cart.isSuccess && items.length === 0 && !placeOrder.isPending && !placeOrder.isSuccess) {
@@ -182,17 +185,28 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
       document.getElementById('carteira-e-rede')?.focus()
       return
     }
-    if (!currentQuote || blockingIssues.length > 0) {
+    if (!currentQuote || issues.length > 0) {
       toast.error('Revise os itens do carrinho antes de continuar.')
       return
     }
     setReview({ quote: currentQuote, key: crypto.randomUUID(), values: submitted })
   })
 
-  function refreshReview() {
-    if (!review || !currentQuote) return
+  async function refreshReview() {
+    if (!review) return
     setConflict(null)
-    setReview({ ...review, quote: currentQuote, key: crypto.randomUUID() })
+    try {
+      await acknowledge.mutateAsync()
+      const fresh = await quote.refetch()
+      if (!fresh.data || fresh.data.issues.length > 0) {
+        setReview(null)
+        toast.error('Revise o carrinho antes de continuar.')
+        return
+      }
+      setReview({ ...review, quote: fresh.data, key: crypto.randomUUID() })
+    } catch (error) {
+      toast.error('Não foi possível atualizar os valores', { description: getErrorMessage(error) })
+    }
   }
 
   function confirm() {
@@ -349,6 +363,24 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
             </Link>
           </p>
 
+          {priceIssues.length > 0 && blockingIssues.length === 0 && !review && (
+            <div className="mt-4">
+              <FormAlert>
+                <span className="flex flex-col gap-2">
+                  <span>{priceIssues.map((issue) => issue.message).join(' ')}</span>
+                  <button
+                    type="button"
+                    onClick={() => acknowledge.mutate(undefined, { onSuccess: () => toast.success('Novos preços aceitos') })}
+                    disabled={acknowledge.isPending}
+                    className="self-start rounded-[5px] bg-primary px-3 py-1 font-bold text-primary-foreground disabled:opacity-60"
+                  >
+                    Aceitar novos preços
+                  </button>
+                </span>
+              </FormAlert>
+            </div>
+          )}
+
           {blockingIssues.length > 0 && (
             <div className="mt-4">
               <FormAlert>
@@ -431,7 +463,7 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
 
           <button
             type="submit"
-            disabled={quote.isPending || blockingIssues.length > 0}
+            disabled={quote.isPending || issues.length > 0}
             className="mt-6 h-[60px] w-full rounded-[10px] bg-primary text-base font-bold text-primary-foreground hover:bg-primary/85 disabled:opacity-50 md:h-[43px] md:rounded-[6px]"
           >
             Confirmar compra
@@ -476,7 +508,7 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
               <button
                 type="button"
                 onClick={refreshReview}
-                disabled={!currentQuote || quote.isFetching}
+                disabled={acknowledge.isPending || quote.isFetching}
                 className="h-11 rounded-[6px] bg-primary px-4 font-bold text-primary-foreground disabled:opacity-60"
               >
                 Usar novos valores

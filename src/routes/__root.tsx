@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { Toaster } from '@/components/ui/sonner'
 import { SessionWatcher } from '@/features/auth/session-watcher'
 import { useCartCount } from '@/features/cart/use-cart'
+import { RealtimeBridge } from '@/features/realtime/realtime-bridge'
 import type { RouterContext } from '@/app/router'
 
 const ScenarioPanel = import.meta.env.VITE_ENABLE_MOCKS === 'true' ? lazy(() => import('@/mocks/ui/scenario-panel')) : null
@@ -27,6 +28,7 @@ function RootComponent() {
       </AppLayout>
       <Toaster />
       <SessionWatcher />
+      <RealtimeBridge />
       {ScenarioPanel && (
         <Suspense fallback={null}>
           <ScenarioPanel />
