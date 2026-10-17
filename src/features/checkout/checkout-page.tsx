@@ -6,6 +6,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { AlertTriangle, CheckCircle2, Loader2, PlugZap, Unplug } from 'lucide-react'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { cartApi } from '@/api/cart'
 import { NETWORK_LABELS, NETWORKS, WALLET_TYPE_LABELS, type Network, type Quote, type Wallet } from '@/api/contracts'
 import { getErrorMessage, isApiError } from '@/api/http'
 import { queryKeys } from '@/api/query-keys'
@@ -196,14 +197,18 @@ function CheckoutForm({ userId, wallets, defaults }: CheckoutFormProps) {
     if (!review) return
     setConflict(null)
     try {
-      await acknowledge.mutateAsync()
-      const fresh = await quote.refetch()
-      if (!fresh.data || fresh.data.issues.length > 0) {
+      const acknowledged = await acknowledge.mutateAsync()
+      const fresh = await queryClient.fetchQuery({
+        queryKey: [...queryKeys.cart.quote(userId, network), acknowledged.version],
+        queryFn: ({ signal }) => cartApi.quote(network, signal),
+        staleTime: 0,
+      })
+      if (fresh.issues.length > 0) {
         setReview(null)
         toast.error('Revise o carrinho antes de continuar.')
         return
       }
-      setReview({ ...review, quote: fresh.data, key: crypto.randomUUID() })
+      setReview({ ...review, quote: fresh, key: crypto.randomUUID() })
     } catch (error) {
       toast.error('Não foi possível atualizar os valores', { description: getErrorMessage(error) })
     }
