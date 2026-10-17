@@ -209,7 +209,7 @@ Valores em ETH trafegam como string decimal e são calculados em wei com `BigInt
 
 ## Testes
 
-A suíte Playwright (`e2e/`) roda cada teste em contexto isolado (banco simulado zerado e cenário definido antes do carregamento) nos projetos `desktop` (1440 × 900) e `mobile` (390 × 844). São 128 casos cobrindo:
+A suíte Playwright (`e2e/`) roda cada teste em contexto isolado (banco simulado zerado e cenário definido antes do carregamento) nos projetos `desktop` (1440 × 900) e `mobile` (390 × 844). São 138 casos cobrindo:
 
 - catálogo: busca, filtros, ordenação, paginação, histórico, página fora do intervalo, respostas fora de ordem, skeletons, erro com retry, vazio e offline;
 - detalhe e 404;
@@ -220,6 +220,8 @@ A suíte Playwright (`e2e/`) roda cada teste em contexto isolado (banco simulado
 - perfil, avatar, senha e carteiras com erros de validação e do servidor;
 - tempo real: preço e disponibilidade no detalhe e no pagamento, eventos duplicados e antigos, queda e reconciliação, pedido pendente após refresh e confirmação durante a desconexão;
 - teclado e foco: link de pular conteúdo, diálogos com foco preso e retorno de foco, filtros e seleção de edição pelo teclado;
+- navegação: rolagem suave até o catálogo, voltar ao topo e aviso nas seções fora do escopo;
+- ausência de overflow horizontal em 390, 768 e 1440 px nas telas principais;
 - regressão visual de início, detalhe, carrinho e pagamento.
 
 As imagens de referência ficam em `e2e/__screenshots__` e foram geradas no Chromium em Linux; em outro sistema operacional, rode `pnpm test:e2e:update` antes da primeira comparação. Os retries do Playwright gravam trace (`trace: on-first-retry`).
@@ -232,9 +234,9 @@ Resultado mais recente (medianas):
 
 | Perfil | Página | Perf. | A11y | Boas práticas | SEO | LCP | CLS | TBT |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Celular | Início | 79 | 100 | 100 | 100 | 4,0 s | 0,019 | 257 ms |
-| Celular | Detalhe | 82 | 100 | 100 | 100 | 4,0 s | 0 | 156 ms |
-| Desktop | Início | 99 | 100 | 100 | 100 | 1,0 s | 0 | 5 ms |
+| Celular | Início | 80 | 100 | 100 | 100 | 4,2 s | 0,019 | 211 ms |
+| Celular | Detalhe | 82 | 100 | 100 | 100 | 4,0 s | 0 | 114 ms |
+| Desktop | Início | 99 | 100 | 100 | 100 | 1,0 s | 0 | 3 ms |
 | Desktop | Detalhe | 99 | 100 | 100 | 100 | 0,9 s | 0 | 0 ms |
 
 Acessibilidade, boas práticas e SEO atingem a meta em todos os perfis, assim como a performance no desktop. A performance no celular fica abaixo de 90: o LCP depende de dados que só existem depois que o MSW sobe no navegador. A análise e o que já foi feito estão em [ARCHITECTURE.md](./ARCHITECTURE.md#performance).

@@ -1,41 +1,65 @@
 {
   "generatedAt": "2026-10-17",
+  "tools": {
+    "node": "v22.22.0",
+    "os": "Linux 6.18.44-fc-v139 (x64)",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+    "lhci": "0.15.1",
+    "vite": "8.3.4"
+  },
   "summary": {
     "mobile": {
-      "inicio": {
-        "url": "http://localhost:4174/",
-        "runs": [
-          {
-            "scores": {
-              "performance": 79,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
+      "pages": {
+        "inicio": {
+          "url": "http://localhost:4174/",
+          "runs": [
+            {
+              "scores": {
+                "performance": 75,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 4250.769250000001,
+                "CLS": 0.019441069258809233,
+                "TBT": 337.1208750000003,
+                "FCP": 2380.3901250000004,
+                "SI": 2380.3901250000004
+              }
             },
-            "metrics": {
-              "LCP": 4014.137999999999,
-              "CLS": 0.019441069258809233,
-              "TBT": 256.9999999999998,
-              "FCP": 2458.5151249999994,
-              "SI": 2458.5151249999994
-            }
-          },
-          {
-            "scores": {
-              "performance": 77,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
+            {
+              "scores": {
+                "performance": 82,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 4015.5236999999997,
+                "CLS": 0.019441069258809233,
+                "TBT": 167,
+                "FCP": 2457.84005,
+                "SI": 2457.84005
+              }
             },
-            "metrics": {
-              "LCP": 3987.5807999999997,
-              "CLS": 0.019441069258809233,
-              "TBT": 335,
-              "FCP": 2412.0454499999996,
-              "SI": 2412.0454499999996
+            {
+              "scores": {
+                "performance": 80,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 4176.616150000001,
+                "CLS": 0.019441069258809233,
+                "TBT": 211.01082499999984,
+                "FCP": 2392.1269750000006,
+                "SI": 2392.1269750000006
+              }
             }
-          },
-          {
+          ],
+          "median": {
             "scores": {
               "performance": 80,
               "accessibility": 100,
@@ -43,64 +67,64 @@
               "seo": 100
             },
             "metrics": {
-              "LCP": 3973.659200000001,
+              "LCP": 4176.616150000001,
               "CLS": 0.019441069258809233,
-              "TBT": 244.50000000000068,
-              "FCP": 2455.4645500000006,
-              "SI": 2455.4645500000006
+              "TBT": 211.01082499999984,
+              "FCP": 2392.1269750000006,
+              "SI": 2392.1269750000006
             }
           }
-        ],
-        "median": {
-          "scores": {
-            "performance": 79,
-            "accessibility": 100,
-            "best-practices": 100,
-            "seo": 100
-          },
-          "metrics": {
-            "LCP": 3987.5807999999997,
-            "CLS": 0.019441069258809233,
-            "TBT": 256.9999999999998,
-            "FCP": 2455.4645500000006,
-            "SI": 2455.4645500000006
-          }
-        }
-      },
-      "detalhe": {
-        "url": "http://localhost:4174/nft/emerald-ape-042",
-        "runs": [
-          {
-            "scores": {
-              "performance": 81,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
+        },
+        "detalhe": {
+          "url": "http://localhost:4174/nft/emerald-ape-042",
+          "runs": [
+            {
+              "scores": {
+                "performance": 81,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 4017.382399999999,
+                "CLS": 0,
+                "TBT": 159,
+                "FCP": 2764.1139999999996,
+                "SI": 2764.1139999999996
+              }
             },
-            "metrics": {
-              "LCP": 3994.3304,
-              "CLS": 0,
-              "TBT": 189,
-              "FCP": 2680.2124,
-              "SI": 2680.2124
-            }
-          },
-          {
-            "scores": {
-              "performance": 84,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
+            {
+              "scores": {
+                "performance": 84,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 3738.387600000001,
+                "CLS": 0,
+                "TBT": 98.99999999999977,
+                "FCP": 2724.3672500000002,
+                "SI": 2724.3672500000002
+              }
             },
-            "metrics": {
-              "LCP": 3772.979749999997,
-              "CLS": 0,
-              "TBT": 112.99999999999932,
-              "FCP": 2745.8441249999987,
-              "SI": 2745.8441249999987
+            {
+              "scores": {
+                "performance": 82,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 3993.819199999999,
+                "CLS": 0,
+                "TBT": 114.00000000000023,
+                "FCP": 2679.1369999999997,
+                "SI": 2679.1369999999997
+              }
             }
-          },
-          {
+          ],
+          "median": {
             "scores": {
               "performance": 82,
               "accessibility": 100,
@@ -108,116 +132,79 @@
               "seo": 100
             },
             "metrics": {
-              "LCP": 3982.548199999996,
+              "LCP": 3993.819199999999,
               "CLS": 0,
-              "TBT": 156.49999999999864,
-              "FCP": 2673.0666999999985,
-              "SI": 2673.0666999999985
+              "TBT": 114.00000000000023,
+              "FCP": 2724.3672500000002,
+              "SI": 2724.3672500000002
             }
-          }
-        ],
-        "median": {
-          "scores": {
-            "performance": 82,
-            "accessibility": 100,
-            "best-practices": 100,
-            "seo": 100
-          },
-          "metrics": {
-            "LCP": 3982.548199999996,
-            "CLS": 0,
-            "TBT": 156.49999999999864,
-            "FCP": 2680.2124,
-            "SI": 2680.2124
-          }
-        }
-      }
-    },
-    "desktop": {
-      "inicio": {
-        "url": "http://localhost:4174/",
-        "runs": [
-          {
-            "scores": {
-              "performance": 99,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
-            },
-            "metrics": {
-              "LCP": 983.178375,
-              "CLS": 0,
-              "TBT": 1,
-              "FCP": 654.9522499999999,
-              "SI": 712.1483634513678
-            }
-          },
-          {
-            "scores": {
-              "performance": 99,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
-            },
-            "metrics": {
-              "LCP": 933.2113000000004,
-              "CLS": 0,
-              "TBT": 5.000000000000114,
-              "FCP": 585.0795,
-              "SI": 647.8204977721464
-            }
-          },
-          {
-            "scores": {
-              "performance": 99,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
-            },
-            "metrics": {
-              "LCP": 967.65395,
-              "CLS": 0,
-              "TBT": 14,
-              "FCP": 607.82425,
-              "SI": 722.662152183033
-            }
-          }
-        ],
-        "median": {
-          "scores": {
-            "performance": 99,
-            "accessibility": 100,
-            "best-practices": 100,
-            "seo": 100
-          },
-          "metrics": {
-            "LCP": 967.65395,
-            "CLS": 0,
-            "TBT": 5.000000000000114,
-            "FCP": 607.82425,
-            "SI": 712.1483634513678
           }
         }
       },
-      "detalhe": {
-        "url": "http://localhost:4174/nft/emerald-ape-042",
-        "runs": [
-          {
-            "scores": {
-              "performance": 99,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
+      "conditions": {
+        "lighthouse": "12.6.1",
+        "browser": "HeadlessChrome/141.0.0.0",
+        "benchmarkIndex": 1972,
+        "formFactor": "mobile",
+        "throttlingMethod": "simulate",
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "cpuSlowdownMultiplier": 4,
+        "screen": "412×823 @1.75x"
+      }
+    },
+    "desktop": {
+      "pages": {
+        "inicio": {
+          "url": "http://localhost:4174/",
+          "runs": [
+            {
+              "scores": {
+                "performance": 99,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 952.6174500000003,
+                "CLS": 0,
+                "TBT": 0,
+                "FCP": 603.56525,
+                "SI": 678.1370386105393
+              }
             },
-            "metrics": {
-              "LCP": 942.0590000000005,
-              "CLS": 0,
-              "TBT": 0,
-              "FCP": 621.0295000000001,
-              "SI": 654.0125896665863
+            {
+              "scores": {
+                "performance": 99,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 952.082,
+                "CLS": 0,
+                "TBT": 5,
+                "FCP": 633.13,
+                "SI": 691.1185721545223
+              }
+            },
+            {
+              "scores": {
+                "performance": 99,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 952.5280000000002,
+                "CLS": 0,
+                "TBT": 2.9999999999998863,
+                "FCP": 605.4600000000002,
+                "SI": 705.4323281686316
+              }
             }
-          },
-          {
+          ],
+          "median": {
             "scores": {
               "performance": 99,
               "accessibility": 100,
@@ -225,44 +212,90 @@
               "seo": 100
             },
             "metrics": {
-              "LCP": 887.6711999999995,
+              "LCP": 952.5280000000002,
               "CLS": 0,
-              "TBT": 0,
-              "FCP": 578.5983999999997,
-              "SI": 609.4584281665487
-            }
-          },
-          {
-            "scores": {
-              "performance": 99,
-              "accessibility": 100,
-              "best-practices": 100,
-              "seo": 100
-            },
-            "metrics": {
-              "LCP": 913.2871749999997,
-              "CLS": 0,
-              "TBT": 0,
-              "FCP": 589.0945999999999,
-              "SI": 614.8063115832796
+              "TBT": 2.9999999999998863,
+              "FCP": 605.4600000000002,
+              "SI": 691.1185721545223
             }
           }
-        ],
-        "median": {
-          "scores": {
-            "performance": 99,
-            "accessibility": 100,
-            "best-practices": 100,
-            "seo": 100
-          },
-          "metrics": {
-            "LCP": 913.2871749999997,
-            "CLS": 0,
-            "TBT": 0,
-            "FCP": 589.0945999999999,
-            "SI": 614.8063115832796
+        },
+        "detalhe": {
+          "url": "http://localhost:4174/nft/emerald-ape-042",
+          "runs": [
+            {
+              "scores": {
+                "performance": 99,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 924.2285000000004,
+                "CLS": 0,
+                "TBT": 0,
+                "FCP": 618.4028250000002,
+                "SI": 648.5101436666976
+              }
+            },
+            {
+              "scores": {
+                "performance": 99,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 887.2831500000004,
+                "CLS": 0,
+                "TBT": 0,
+                "FCP": 593.5249249999998,
+                "SI": 631.9595368332737
+              }
+            },
+            {
+              "scores": {
+                "performance": 99,
+                "accessibility": 100,
+                "best-practices": 100,
+                "seo": 100
+              },
+              "metrics": {
+                "LCP": 916.4508000000001,
+                "CLS": 0,
+                "TBT": 0,
+                "FCP": 590.6932,
+                "SI": 652.0576020000408
+              }
+            }
+          ],
+          "median": {
+            "scores": {
+              "performance": 99,
+              "accessibility": 100,
+              "best-practices": 100,
+              "seo": 100
+            },
+            "metrics": {
+              "LCP": 916.4508000000001,
+              "CLS": 0,
+              "TBT": 0,
+              "FCP": 593.5249249999998,
+              "SI": 648.5101436666976
+            }
           }
         }
+      },
+      "conditions": {
+        "lighthouse": "12.6.1",
+        "browser": "HeadlessChrome/141.0.0.0",
+        "benchmarkIndex": 2160,
+        "formFactor": "desktop",
+        "throttlingMethod": "simulate",
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "cpuSlowdownMultiplier": 1,
+        "screen": "1350×940 @1x"
       }
     }
   }

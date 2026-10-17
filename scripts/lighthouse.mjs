@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 
 const ROOT = path.resolve(import.meta.dirname, '..')
@@ -42,9 +43,11 @@ function summarize(preset) {
   const manifest = JSON.parse(readFileSync(path.join(dir, 'manifest.json'), 'utf8'))
   const pages = {}
 
+  let conditions = null
   for (const entry of manifest) {
     const name = pageName(entry.url)
     const report = JSON.parse(readFileSync(entry.jsonPath, 'utf8'))
+    conditions ??= describeConditions(report)
     const run = {
       scores: Object.fromEntries(CATEGORIES.map((key) => [key, Math.round(report.categories[key].score * 100)])),
       metrics: Object.fromEntries(Object.entries(METRICS).map(([label, id]) => [label, report.audits[id].numericValue])),
@@ -69,7 +72,33 @@ function summarize(preset) {
       metrics: Object.fromEntries(Object.keys(METRICS).map((label) => [label, median(page.runs.map((run) => run.metrics[label]))])),
     }
   }
-  return pages
+  return { pages, conditions }
+}
+
+function describeConditions(report) {
+  const { configSettings: settings, environment } = report
+  return {
+    lighthouse: report.lighthouseVersion,
+    browser: environment.hostUserAgent.match(/(?:Headless)?Chrome\/[\d.]+/)?.[0] ?? environment.hostUserAgent,
+    benchmarkIndex: Math.round(environment.benchmarkIndex),
+    formFactor: settings.formFactor,
+    throttlingMethod: settings.throttlingMethod,
+    rttMs: settings.throttling.rttMs,
+    throughputKbps: settings.throttling.throughputKbps,
+    cpuSlowdownMultiplier: settings.throttling.cpuSlowdownMultiplier,
+    screen: `${settings.screenEmulation.width}×${settings.screenEmulation.height} @${settings.screenEmulation.deviceScaleFactor}x`,
+  }
+}
+
+function toolVersions() {
+  const read = (name) => JSON.parse(readFileSync(path.join(ROOT, 'node_modules', name, 'package.json'), 'utf8')).version
+  return {
+    node: process.version,
+    os: `${os.type()} ${os.release()} (${os.arch()})`,
+    cpu: os.cpus()[0]?.model ?? 'desconhecida',
+    lhci: read('@lhci/cli'),
+    vite: read('vite'),
+  }
 }
 
 function formatMetric(label, value) {
@@ -77,16 +106,16 @@ function formatMetric(label, value) {
   return value >= 1000 ? `${(value / 1000).toFixed(2)} s` : `${Math.round(value)} ms`
 }
 
-function toMarkdown(summary, generatedAt) {
+function toMarkdown(summary, generatedAt, tools) {
   const lines = [
     '# Lighthouse',
     '',
-    `Gerado em ${generatedAt} com \`pnpm lighthouse\` (build de produção servido por \`vite preview\`, 3 execuções por página, valores medianos).`,
+    `Gerado em ${generatedAt} com \`pnpm lighthouse\` (build de produção servido por \`vite preview\`, mocks ligados no cenário \`padrao\`, 3 execuções por página, valores medianos).`,
     '',
     '| Perfil | Página | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT | FCP |',
     '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ]
-  for (const [preset, pages] of Object.entries(summary)) {
+  for (const [preset, { pages }] of Object.entries(summary)) {
     for (const [name, page] of Object.entries(pages)) {
       const { scores, metrics } = page.median
       const score = (key) => `${scores[key]}${scores[key] < TARGETS[key] ? ' ⚠️' : ''}`
@@ -97,12 +126,24 @@ function toMarkdown(summary, generatedAt) {
   }
   lines.push('', 'Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90. ⚠️ indica valor abaixo da meta.', '')
   lines.push('Todas as execuções:', '')
-  for (const [preset, pages] of Object.entries(summary)) {
+  for (const [preset, { pages }] of Object.entries(summary)) {
     for (const [name, page] of Object.entries(pages)) {
       const values = page.runs.map((run) => `${run.scores.performance} (LCP ${formatMetric('LCP', run.metrics.LCP)}, TBT ${formatMetric('TBT', run.metrics.TBT)})`)
       lines.push(`- ${preset} / ${name}: ${values.join(' · ')}`)
     }
   }
+  lines.push('', '## Ferramentas e ambiente', '')
+  lines.push(`- Node ${tools.node}, @lhci/cli ${tools.lhci}, Vite ${tools.vite}`)
+  lines.push(`- Sistema: ${tools.os}; CPU: ${tools.cpu}`)
+  lines.push('', '## Condições de execução', '')
+  lines.push('| Perfil | Lighthouse | Navegador | Tela | Throttling | RTT | Banda | CPU | Benchmark |', '| --- | --- | --- | --- | --- | --- | --- | --- | --- |')
+  for (const [preset, { conditions: c }] of Object.entries(summary)) {
+    if (!c) continue
+    lines.push(
+      `| ${preset} | ${c.lighthouse} | ${c.browser} | ${c.screen} | ${c.throttlingMethod} | ${c.rttMs} ms | ${Math.round(c.throughputKbps)} Kbps | ${c.cpuSlowdownMultiplier}× | ${c.benchmarkIndex} |`,
+    )
+  }
+  lines.push('', 'Throttling `simulate` é o padrão do Lighthouse: a página carrega sem limite e as métricas são recalculadas para a rede e a CPU indicadas.')
   return `${lines.join('\n')}\n`
 }
 
@@ -116,7 +157,8 @@ for (const preset of PRESETS) {
 rmSync(path.join(ROOT, '.lighthouseci'), { recursive: true, force: true })
 
 const generatedAt = new Date().toISOString().slice(0, 10)
-writeFileSync(path.join(OUTPUT, 'resumo.json'), `${JSON.stringify({ generatedAt, summary }, null, 2)}\n`)
-writeFileSync(path.join(OUTPUT, 'RESUMO.md'), toMarkdown(summary, generatedAt))
+const tools = toolVersions()
+writeFileSync(path.join(OUTPUT, 'resumo.json'), `${JSON.stringify({ generatedAt, tools, summary }, null, 2)}\n`)
+writeFileSync(path.join(OUTPUT, 'RESUMO.md'), toMarkdown(summary, generatedAt, tools))
 console.log(readFileSync(path.join(OUTPUT, 'RESUMO.md'), 'utf8'))
 process.exitCode = passed ? 0 : 1

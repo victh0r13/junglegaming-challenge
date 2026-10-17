@@ -117,6 +117,7 @@ As animações são todas em CSS (keyframes próprios em `index.css` e utilitár
 - **Carregamento:** imagens surgem com fade sobre um fundo neutro, sem piscar; imagens prioritárias (LCP) aparecem sem transição para não atrasar a métrica.
 
 - **Navegação:** cada página entra com um fade curto (250 ms, só opacidade).
+- **Rolagem:** links para `#catalogo` (Mercado, Explorar, busca do header, atalhos de coleção) e `#favoritos` rolam suavemente, inclusive quando a URL já aponta para a âncora; a partir do tablet, um botão "Voltar ao topo" aparece depois de rolar e devolve o foco ao conteúdo.
 
 Regras seguidas: os blocos animam apenas `opacity`, `translate` e `scale`, que não causam layout shift (os indicadores do carrossel mudam de largura dentro de um botão de tamanho fixo); a entrada de página é só opacidade, para não criar bloco de contenção para elementos `fixed`; o hover só existe em dispositivos com ponteiro; e `prefers-reduced-motion` desliga todas as animações. O Lighthouse foi refeito depois das animações e não houve regressão (o CLS do início no celular até caiu, porque os indicadores do hero passaram a reservar a altura durante o carregamento).
 
@@ -126,9 +127,9 @@ Medido com Lighthouse CI (3 execuções, mediana; detalhes em [`lighthouse/RESUM
 
 | Perfil | Página | Antes | Depois | LCP | TBT | CLS |
 | --- | --- | --- | --- | --- | --- | --- |
-| Celular | Início | 74 | 79 | 4,0 s | 257 ms | 0,019 |
-| Celular | Detalhe | 77 | 82 | 4,0 s | 156 ms | 0 |
-| Desktop | Início | — | 99 | 1,0 s | 5 ms | 0 |
+| Celular | Início | 74 | 80 | 4,2 s | 211 ms | 0,019 |
+| Celular | Detalhe | 77 | 82 | 4,0 s | 114 ms | 0 |
+| Desktop | Início | — | 99 | 1,0 s | 3 ms | 0 |
 | Desktop | Detalhe | 89 | 99 | 0,9 s | 0 ms | 0 |
 
 O que foi feito:
@@ -136,6 +137,7 @@ O que foi feito:
 - aplicação e mock carregam em paralelo, e a interface renderiza antes do Service Worker estar pronto;
 - stub de `tough-cookie` (−120 KB gzip no caminho crítico);
 - tempo real e menu da conta carregados sob demanda (−25 KB gzip no chunk principal);
+- blocos exclusivos de um tamanho de tela (header, rodapé, filtros laterais, destaque, promoções e blog no desktop; tab bar no celular) só são renderizados no tamanho em que aparecem, em vez de ficarem montados e escondidos por CSS (TBT no celular de 257 ms para 211 ms no início e de 156 ms para 114 ms no detalhe);
 - zod sem JIT (TBT de 370 ms para 277 ms no início);
 - skeleton do detalhe com a altura da tela, eliminando o salto do rodapé (CLS de 0,206 para 0 no desktop);
 - imagens WebP em 320/640/960 com `srcset`/`sizes`, dimensões fixas e prioridade alta só para as imagens acima da dobra;
@@ -159,7 +161,9 @@ Os testes e o Lighthouse ajudaram a encontrar e corrigir quatro problemas reais:
 - **Rodapé oculto no celular:** a tab bar fixa já cobre a navegação, então o rodapé só aparece a partir do tablet.
 - **Ícones de olho via lucide:** o botão de mostrar/ocultar senha usa `Eye`/`EyeOff` do lucide, no mesmo traço dos demais ícones, em vez de um asset próprio.
 - **Labels do login como `sr-only`:** o layout do login usa só placeholder. Os labels existem para leitores de tela, mas ficam visualmente ocultos para respeitar o design.
-- **Login social e páginas editoriais desativados:** "Continuar com Google/Facebook", "Criadores", "Aprenda", os artigos do blog e os links do rodapé sem destino aparecem como no design, mas informam que estão indisponíveis na demonstração em vez de levar a páginas vazias.
+- **Login social e páginas editoriais desativados:** o enunciado tira da entrega páginas editoriais, suporte, atividade, ofertas e downloads. "Continuar com Google/Facebook", "Criadores", "Aprenda", os artigos do blog e os links do rodapé sem destino aparecem como no design, levemente esmaecidos e marcados com `aria-disabled`; ao clicar, um aviso informa que a seção estará disponível em breve, sem aparentar sucesso nem levar a páginas vazias. "Lista de interesse" aponta para os favoritos, que existem.
+- **NFT em destaque:** o card lateral ganhou margens internas iguais às do título, arte quadrada sem corte, nome e preço sobre a imagem e o botão "Ver oferta"; as bolhas decorativas que ficavam por cima da arte foram para o fundo.
+- **Detalhe no tablet:** entre 768 e 1023 px a galeria fica acima das informações, em vez de lado a lado, para não cortar o texto nem os botões.
 
 ## Limitações conhecidas
 
