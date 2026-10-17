@@ -1,4 +1,4 @@
-import { expect, test } from './support/fixtures'
+import { USERS, expect, test } from './support/fixtures'
 
 test.describe('Navegação', () => {
   test('Mercado rola até o catálogo, inclusive quando a URL já aponta para ele', async ({ app, page }) => {
@@ -20,6 +20,23 @@ test.describe('Navegação', () => {
       .toBe(true)
     await market.click()
     await expect(catalog.getByRole('searchbox', { name: 'Buscar NFTs' })).toBeInViewport()
+  })
+
+  test('menu destaca Mercado no catálogo e nenhum item nas páginas da conta', async ({ app, page }) => {
+    test.skip(app.isMobile, 'Menu principal existe a partir do tablet.')
+    await app.login(USERS.ana)
+    const nav = page.getByRole('navigation', { name: 'Principal' })
+    await expect(nav.getByRole('link', { name: 'Início' })).toHaveAttribute('aria-current', 'page')
+
+    await nav.getByRole('link', { name: 'Mercado' }).click()
+    await expect(nav.getByRole('link', { name: 'Mercado' })).toHaveAttribute('aria-current', 'page')
+    await expect(nav.getByRole('link', { name: 'Início' })).not.toHaveAttribute('aria-current', 'page')
+
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+    await expect(nav.getByRole('link', { name: 'Início' })).toHaveAttribute('aria-current', 'page')
+
+    await app.open('/perfil')
+    await expect(nav.locator('[aria-current="page"]')).toHaveCount(0)
   })
 
   test('atalho do celular rola até o catálogo', async ({ app, page }) => {

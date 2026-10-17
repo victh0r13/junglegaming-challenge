@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { LogOut, User as UserIcon, Wallet } from 'lucide-react'
 import { toast } from 'sonner'
 import type { User } from '@/api/contracts'
@@ -11,11 +11,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useLogout } from '@/features/auth/use-auth'
+import { cn } from '@/lib/utils'
 import { UserAvatar } from './account-menu'
 
 export default function AccountDropdown({ user }: { user: User | undefined }) {
   const logout = useLogout()
   const navigate = useNavigate()
+  const inAccount = useLocation({ select: (location) => location.pathname === '/perfil' || location.pathname === '/carteiras' })
 
   async function signOut() {
     await logout.mutateAsync().catch(() => undefined)
@@ -26,7 +28,10 @@ export default function AccountDropdown({ user }: { user: User | undefined }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex h-[35px] items-center gap-2 rounded-[6px] border border-border-soft px-2 text-sm hover:border-primary"
+        className={cn(
+          'flex h-[35px] items-center gap-2 rounded-[6px] border px-2 text-sm transition-colors hover:border-primary',
+          inAccount ? 'border-primary bg-primary/10 text-text-accent' : 'border-border-soft',
+        )}
         aria-label={user ? `Conta de ${user.displayName}` : 'Conta'}
       >
         {user ? <UserAvatar user={user} className="size-6" /> : <span className="size-6 rounded-full bg-surface-card" />}

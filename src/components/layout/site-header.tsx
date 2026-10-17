@@ -1,8 +1,10 @@
-import { Link } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { Link, useLinkProps } from '@tanstack/react-router'
 import { CartIcon, SearchIcon } from '@/components/icons'
 import { cn } from '@/lib/utils'
 import { AccountMenu } from './account-menu'
 import { announceComingSoon } from './coming-soon'
+import { useSectionInView } from './use-section-in-view'
 import type { NavSection } from './app-layout'
 
 type SiteHeaderProps = {
@@ -15,10 +17,12 @@ const navItemClass =
   'relative block pb-6 text-base whitespace-nowrap transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:bg-primary after:transition-[scale] after:duration-300 after:ease-out'
 
 export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteHeaderProps) {
+  const catalogInView = useSectionInView('catalogo', active === 'inicio')
+  const current = catalogInView ? 'mercado' : active
   const itemClass = (section: NavSection) =>
     cn(
       navItemClass,
-      active === section
+      current === section
         ? 'font-bold text-text-accent after:scale-x-100'
         : 'text-foreground after:scale-x-0 hover:text-text-accent hover:after:scale-x-100',
     )
@@ -33,19 +37,14 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
         <nav aria-label="Principal">
           <ul className="flex gap-6 lg:gap-10">
             <li>
-              <Link to="/" className={itemClass('inicio')} aria-current={active === 'inicio' ? 'page' : undefined}>
+              <NavLink hash={undefined} current={current === 'inicio'} className={itemClass('inicio')}>
                 Início
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
-                to="/"
-                hash="catalogo"
-                className={itemClass('mercado')}
-                aria-current={active === 'mercado' ? 'page' : undefined}
-              >
+              <NavLink hash="catalogo" current={current === 'mercado'} className={itemClass('mercado')}>
                 Mercado
-              </Link>
+              </NavLink>
             </li>
             {['Criadores', 'Aprenda'].map((label) => (
               <li key={label}>
@@ -94,5 +93,16 @@ export function SiteHeader({ active, cartCount = 0, withDivider = false }: SiteH
         </div>
       </div>
     </header>
+  )
+}
+
+type NavLinkProps = { hash: string | undefined; current: boolean; className: string; children: ReactNode }
+
+function NavLink({ hash, current, className, children }: NavLinkProps) {
+  const { 'aria-current': _routerCurrent, ...props } = useLinkProps({ to: '/', hash })
+  return (
+    <a {...props} className={className} aria-current={current ? 'page' : undefined}>
+      {children}
+    </a>
   )
 }

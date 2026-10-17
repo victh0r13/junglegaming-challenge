@@ -3,6 +3,6 @@ import { WalletsPage } from '@/features/account/wallets-page'
 
 export const Route = createFileRoute('/_privado/carteiras')({
   head: () => ({ meta: [{ title: 'Carteiras — Kurio' }, { name: 'description', content: 'Gerencie as carteiras principal e secundária usadas nas suas compras na Kurio.' }] }),
-  staticData: { nav: 'inicio', tab: 'perfil', headerDivider: true },
+  staticData: { tab: 'perfil', headerDivider: true },
   component: WalletsPage,
 })
