@@ -75,6 +75,21 @@ test.describe('Autenticação', () => {
     await expect(page.getByRole('main').getByLabel('Nome de exibição')).toHaveValue(USERS.ana.name)
   })
 
+  test('aviso de sessão expirada continua após recarregar sem novo login', async ({ app, page }) => {
+    await app.login(USERS.ana, '/perfil')
+    await page.evaluate(() => window.__kurioMocks!.expireSessions())
+    await app.reload()
+    await expect(page).toHaveURL(/motivo=expirada/)
+
+    await app.open('/carteiras')
+    await expect(page).toHaveURL(/\/entrar\?redirect=(%2F|\/)carteiras.*motivo=expirada/)
+    await expect(app.authDialog().getByText('Sua sessão expirou. Entre novamente para continuar de onde parou.')).toBeVisible()
+
+    await app.submitLogin(USERS.ana)
+    await expect(page).toHaveURL(/\/carteiras$/)
+    expect(await page.evaluate(() => window.localStorage.getItem('kurio:session-expired'))).toBeNull()
+  })
+
   test.describe('sessão curta', () => {
     test.use({ scenario: 'sessao-curta' })
 

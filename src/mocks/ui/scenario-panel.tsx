@@ -9,7 +9,7 @@ import { mockControl } from '../control'
 import { db } from '../db'
 import { SCENARIOS, type ScenarioId } from '../scenarios'
 
-const APP_STORAGE_KEYS = ['kurio:session', 'kurio:guest-cart-id', 'kurio:pending-checkout']
+const APP_STORAGE_KEYS = ['kurio:session', 'kurio:session-expired', 'kurio:guest-cart-id', 'kurio:pending-checkout']
 
 export default function ScenarioPanel() {
   const selectId = useId()

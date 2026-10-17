@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { storage } from '@/lib/storage'
 
 const STORAGE_KEY = 'kurio:session'
+const EXPIRED_KEY = 'kurio:session-expired'
 
 export type StoredSession = {
   token: string
@@ -19,7 +20,12 @@ type Listener = () => void
 function createSessionStore() {
   const listeners = new Set<Listener>()
   const saved = storage.get<StoredSession>(STORAGE_KEY)
-  let state: SessionState = saved ? { status: 'authenticated', session: saved } : { status: 'anonymous' }
+  const expiredUserId = storage.get<string>(EXPIRED_KEY)
+  let state: SessionState = saved
+    ? { status: 'authenticated', session: saved }
+    : expiredUserId
+      ? { status: 'expired', previousUserId: expiredUserId }
+      : { status: 'anonymous' }
 
   function emit(next: SessionState) {
     state = next
@@ -37,16 +43,19 @@ function createSessionStore() {
       }
     },
     signIn(session: StoredSession) {
+      storage.remove(EXPIRED_KEY)
       storage.set(STORAGE_KEY, session)
       emit({ status: 'authenticated', session })
     },
     signOut() {
+      storage.remove(EXPIRED_KEY)
       storage.remove(STORAGE_KEY)
       emit({ status: 'anonymous' })
     },
     markExpired() {
       if (state.status !== 'authenticated') return
       const previousUserId = state.session.userId
+      storage.set(EXPIRED_KEY, previousUserId)
       storage.remove(STORAGE_KEY)
       emit({ status: 'expired', previousUserId })
     },
@@ -60,7 +69,9 @@ if (typeof window !== 'undefined') {
     if (event.key !== STORAGE_KEY) return
     const next = storage.get<StoredSession>(STORAGE_KEY)
     if (next) sessionStore.signIn(next)
-    else if (sessionStore.getState().status === 'authenticated') sessionStore.signOut()
+    else if (sessionStore.getState().status !== 'authenticated') return
+    else if (storage.get<string>(EXPIRED_KEY)) sessionStore.markExpired()
+    else sessionStore.signOut()
   })
 }
 
